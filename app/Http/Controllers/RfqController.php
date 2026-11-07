@@ -46,6 +46,8 @@ class RfqController extends Controller
             'markets' => Market::query()->where('status', Market::STATUS_ACTIVE)->orderBy('name')->get(),
             'orderTypes' => OrderType::query()->where('status', OrderType::STATUS_ACTIVE)->orderBy('name')->get(),
             'proposedMethods' => ProposedMethod::query()->where('status', ProposedMethod::STATUS_ACTIVE)->orderBy('name')->get(),
+            'oldItems' => [],
+            'rfq' => null,
         ]);
     }
 
@@ -157,6 +159,7 @@ class RfqController extends Controller
             'orderTypes' => OrderType::query()->where('status', OrderType::STATUS_ACTIVE)->orderBy('name')->get(),
             'proposedMethods' => ProposedMethod::query()->where('status', ProposedMethod::STATUS_ACTIVE)->orderBy('name')->get(),
             'rfq' => $rfq,
+            'oldItems' => $rfq->items->toArray(),
         ]);
     }
 

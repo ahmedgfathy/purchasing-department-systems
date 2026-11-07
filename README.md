@@ -1,77 +1,88 @@
-# Purchasing System
+# Purchasing System (PPD)
 
-Laravel 12 application with role-based access control (RBAC) and a global audit trail. The front end is rendered entirely with Blade templates, served by Nginx at **http://ppd.local**, backed by PostgreSQL.
+This is a Laravel-based purchasing system with RFQ (Request for Quotation) functionality.
 
-## Stack
+## Features
 
-| Component | Value |
-| --- | --- |
-| Framework | Laravel 12 |
-| PHP | 8.4 (PHP-FPM) |
-| Database | PostgreSQL 17, database `ppd` |
-| Web server | Nginx (`/etc/nginx/sites-available/ppd.local`) |
-| Front end | Blade templates only (no JS framework) |
+- Role-Based Access Control (RBAC)
+- Request for Quotation (RFQ) management
+- Dropdown management (Markets, Order Types, Proposed Methods)
+- Bilingual support (English/Arabic)
+- Audit trail
+- User management
+- Vendor management
 
-## Sign in
+## Installation
 
-| Field | Value |
-| --- | --- |
-| URL | http://ppd.local |
-| Email | `admin@ppd.local` |
-| Password | `Admin@12345` |
+1. Clone the repository
+2. Install dependencies: `composer install`
+3. Copy `.env.example` to `.env` and configure database
+4. Generate application key: `php artisan key:generate`
+5. Run migrations: `php artisan migrate`
+6. Seed database: `php artisan db:seed`
+7. Serve the application: `php artisan serve`
 
-Change the password after the first login. The first page is the login screen; guests are always redirected there.
+## RFQ Implementation Details
 
-## Database
+The RFQ system has been implemented to match the structure specified in the Excel template (autocad rfq.xls) with the following header fields:
 
-The connection lives in `.env`:
+- Title (Request title)
+- Project
+- Vessel
+- Requesting Department
+- Location
+- Cost Center
+- Contact Name
+- Contact Code
+- Material Req No
+- Requisition Rec Date
+- Preparation Date
+- Service Delivery Period
+- Market (Local/Foreign) - Dropdown
+- Partial Order (Accepted/Not Accepted) - Dropdown
+- Proposed Method (tender types) - Dropdown
+- Reference Order No
+- Estimated Budget
+- Needed By
+- Description
+- Priority
+- Currency
+- Notes
 
-```
-DB_CONNECTION=pgsql
-DB_HOST=127.0.0.1
-DB_PORT=5432
-DB_DATABASE=ppd
-DB_USERNAME=xinreal
-DB_PASSWORD=ppd_local_dev_2026
-```
+All fields are properly validated and integrated with the existing RFQ workflow (submit → approval → vendor assignment).
 
-## RBAC
+Dropdown management is available for:
+- Markets (Local/Foreign)
+- Order Types (Accepted/Not Accepted)
+- Proposed Methods (Various tender types)
 
-Roles are made of permissions; users can hold multiple roles.
+Role-based permissions:
+- RFQ Requester/Officer: Can view dropdowns and create/edit RFQs
+- Vendor List Manager: Can manage dropdowns (create/edit/delete)
+- Administrator: Full access
 
-- **Users** — CRUD, role assignment, login tracking (last login time + IP).
-- **Roles & permissions** — CRUD, permission checkboxes grouped by module.
-- **Seeded roles**
-  - `super-admin` — bypasses every permission check. System role.
-  - `admin` — all permissions explicitly granted. System role.
-  - `user-manager` — manage users.
-  - `auditor` — view the audit trail.
-  - `viewer` — dashboard only.
-- **Permissions** — `dashboard.view`, `users.view/create/update/delete`, `roles.view/create/update/delete`, `audit.view`.
+The system is fully bilingual (English/Arabic) with all translations provided.
 
-Authorization is enforced by the `permission` middleware (`app/Http/Middleware/EnsureUserHasPermission.php`) on every route and by `hasPermission()` checks in navigation and views.
+## Database Structure
 
-## Audit trail
+The following tables were created/extended:
+- markets
+- order_types
+- proposed_methods
+- rfqs (extended with all header fields from Excel template)
+- rfq_items
+- users, roles, permissions (existing RBAC system)
 
-Auditing is global: every Eloquent model is covered automatically through wildcard model events registered in `app/Providers/AppServiceProvider.php`, so new models are audited without extra code.
+## Testing
 
-Recorded events:
+The implementation has been tested with:
+- Database migrations and seeding
+- Authentication and authorization
+- RFQ creation and editing
+- Form validation
+- Dropdown population
+- Language switching
 
-- `created`, `updated`, `deleted` — every model change.
-- `login`, `logout`, `failed_login` — authentication events.
-- `roles_synced`, `permissions_synced` — RBAC pivot changes.
+## License
 
-Each entry stores **who** (user id, name, email snapshot), **which** (model class, id, label), **where** (URL, HTTP method, IP, user agent) and **when** (timestamp), plus old and new values as JSON. Passwords and remember tokens are never stored. Audit records are read-only in the UI.
-
-The audit screens are available under **Audit trail** for users with the `audit.view` permission, with filters for event, record type, user/record/IP/URL search and date range.
-
-## Useful commands
-
-```bash
-php artisan migrate --seed          # apply migrations and seed RBAC data
-php artisan optimize:clear          # clear config/route/view caches
-php artisan route:list              # list routes
-sudo bash deploy/setup-vhost.sh     # reinstall/refresh the Nginx vhost
-```
-
-Vhost source: `deploy/ppd.local.conf`.
+MIT

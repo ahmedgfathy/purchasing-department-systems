@@ -90,8 +90,9 @@
             box-shadow: 0 8px 20px rgba(0, 0, 0, .45);
         }
         [data-theme="light"] .brand-logo-tile { box-shadow: 0 8px 20px rgba(37, 99, 235, .14); }
-        .brand-logo-tile img { display: block; height: 34px; width: auto; }
-        .brand .brand-sub { font-size: 19px; font-weight: 700; letter-spacing: -.01em; color: var(--text); margin-top: 0; }
+        .brand-logo-tile img { display: block; height: 46px; width: auto; min-width: 118px; }
+        .brand .brand-company { display: block; font-size: 17px; font-weight: 800; letter-spacing: 0; color: var(--text); margin-top: 2px; }
+        .brand .brand-sub { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: var(--muted); margin-top: -6px; }
         .nav { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; min-height: 0; padding-inline-end: 2px; scrollbar-width: thin; }
         .nav-label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); padding: 0 10px; margin: 10px 0 4px; }
         .nav-link {
@@ -404,6 +405,7 @@
                 <span class="brand-logo-tile">
                     <img src="{{ asset('images/logo.svg') }}" alt="{{ config('app.name') }} logo">
                 </span>
+                <span class="brand-company">خدمات البترول البحرية</span>
                 <span class="brand-sub">{{ __('app.brand_subtitle') }}</span>
             </a>
 

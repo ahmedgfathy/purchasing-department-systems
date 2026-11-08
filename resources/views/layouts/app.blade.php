@@ -87,23 +87,6 @@
             top: 0;
             height: 100vh;
         }
-        .sidebar.is-collapsed { width: 78px; flex-basis: 78px; padding-inline: 10px; }
-        .sidebar.is-collapsed .brand { align-items: center; padding-inline: 0; }
-        .sidebar.is-collapsed .brand-copy { display: none; }
-        .sidebar.is-collapsed .brand-logo-tile { padding: 5px; }
-        .sidebar.is-collapsed .brand-logo-tile img { height: 48px; min-width: 0; }
-        .nav-icon { display:inline-flex; align-items:center; justify-content:center; width:18px; height:18px; flex:0 0 18px; }
-        .nav-icon svg { width:17px; height:17px; }
-        .nav-text { min-width:0; }
-        .sidebar.is-collapsed .nav-link { justify-content: center; padding-inline: 8px; }
-        .sidebar.is-collapsed .nav-text { display:none; }
-        .sidebar.is-collapsed .nav-link .dot { display:none; }
-        .sidebar.is-collapsed .nav-group summary .chevron { display: none; }
-        .sidebar.is-collapsed .subnav { margin-inline-start: 0; padding-inline-start: 0; border-inline-start: 0; }
-        .sidebar.is-collapsed .sidebar-footer .btn { font-size: 0; padding-inline: 8px; }
-        .sidebar-toggle { width: 100%; justify-content: center; }
-        .sidebar-toggle svg { width: 16px; height: 16px; transition: transform .18s ease; }
-        .sidebar.is-collapsed .sidebar-toggle svg { transform: rotate(180deg); }
         .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 4px 10px; }
         .brand-logo-tile {
             display: inline-flex; align-items: center; justify-content: center;
@@ -399,16 +382,6 @@
         @media (max-width: 860px) {
             .app-shell { flex-direction: column; }
             .sidebar { width: 100%; flex: none; height: auto; position: static; padding: 18px; border-left: 0; border-right: 0; border-bottom: 1px solid var(--border); }
-            .sidebar.is-collapsed { width: 100%; flex-basis: auto; padding: 18px; }
-            .sidebar.is-collapsed .brand-copy { display: flex; }
-            .sidebar.is-collapsed .brand-logo-tile { padding: 7px 11px; }
-            .sidebar.is-collapsed .brand-logo-tile img { height: 78px; min-width: 105px; }
-            .sidebar.is-collapsed .nav-link { font-size: 14px; justify-content: flex-start; padding-inline: 12px; }
-            .sidebar.is-collapsed .nav-text { display: inline; }
-            .sidebar.is-collapsed .nav-link .dot { display: inline-block; }
-            .sidebar.is-collapsed .nav-group summary .chevron { display: block; }
-            .sidebar.is-collapsed .subnav { margin-inline-start: 17px; padding-inline-start: 12px; border-inline-start: 1px solid var(--border); }
-            .sidebar.is-collapsed .sidebar-footer .btn { font-size: 13px; padding-inline: 10px; }
             .nav { flex-direction: row; flex-wrap: wrap; }
             .nav-label { display: none; }
             .sidebar-footer { flex-direction: row; justify-content: space-between; align-items: center; }
@@ -416,29 +389,6 @@
             .topbar, .content { padding-left: 20px; padding-right: 20px; }
             .form-grid { grid-template-columns: 1fr; }
         }
-
-        /* Navbar-only layout: navigation replaces the vertical sidebar. */
-        .app-shell { display: block; }
-        .sidebar, .sidebar.is-collapsed { width: 100%; height: auto; min-height: 0; flex: none; position: sticky; z-index: 20; top: 0; flex-direction: row; align-items: center; gap: 18px; padding: 10px 22px; border: 0; border-bottom: 1px solid var(--border); }
-        .brand, .sidebar.is-collapsed .brand { flex: 0 0 auto; flex-direction: row; align-items: center; gap: 9px; padding: 0; }
-        .brand-logo-tile, .sidebar.is-collapsed .brand-logo-tile { padding: 3px; }
-        .brand-logo-tile img, .sidebar.is-collapsed .brand-logo-tile img { height: 40px; min-width: 0; }
-        .brand-copy, .sidebar.is-collapsed .brand-copy { display: flex; }
-        .brand .brand-company { font-size: 12px; white-space: nowrap; }
-        .brand .brand-sub { font-size: 13px; white-space: nowrap; }
-        .sidebar-toggle { display: none; }
-        .nav, .sidebar.is-collapsed .nav { flex-direction: row; align-items: center; gap: 3px; min-width: 0; overflow-x: auto; }
-        .nav-label { display: none; }
-        .nav-link, .sidebar.is-collapsed .nav-link { justify-content: flex-start; padding: 8px 10px; font-size: 13px; white-space: nowrap; }
-        .nav-text, .sidebar.is-collapsed .nav-text { display: inline; }
-        .nav-link .dot, .sidebar.is-collapsed .nav-link .dot { display: none; }
-        .nav-icon { display: none; }
-        .nav-group { flex: 0 0 auto; }
-        .subnav { position: absolute; top: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 6px; margin: 0; min-width: 170px; box-shadow: var(--shadow); }
-        .sidebar-footer, .sidebar.is-collapsed .sidebar-footer { flex: 0 0 auto; border: 0; padding: 0; }
-        .sidebar-footer form .btn { width: auto; }
-        .main { min-height: calc(100vh - 64px); }
-        @media (max-width: 860px) { .sidebar, .sidebar.is-collapsed { padding: 10px 14px; gap: 10px; overflow-x: auto; } .nav, .sidebar.is-collapsed .nav { flex: 0 0 auto; } .sidebar-footer, .sidebar.is-collapsed .sidebar-footer { margin-inline-start: auto; } }
     </style>
 </head>
 <body>
@@ -456,7 +406,7 @@
             $canAdministration = auth()->user()->hasAnyPermission(['departments.view', 'locations.view', 'priorities.view', 'currencies.view', 'units.view', 'markets.view', 'order_types.view', 'proposed_methods.view']);
         @endphp
 
-        <header class="sidebar">
+        <aside class="sidebar">
             <a class="brand" href="{{ route('home') }}" aria-label="{{ config('app.name') }}">
                 <span class="brand-logo-tile">
                     <img src="{{ asset('images/logo.svg') }}" alt="{{ config('app.name') }} logo">
@@ -466,53 +416,54 @@
                     <span class="brand-sub">{{ __('app.brand_subtitle') }}</span>
                 </span>
             </a>
+
             <nav class="nav">
                 @if (auth()->user()->hasPermission('dashboard.view'))
                     <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13h7V3H3v10ZM14 21h7V11h-7v10ZM14 3h7v4h-7V3ZM3 17h7v4H3v-4Z"></path></svg></span><span class="nav-text">{{ __('app.nav.dashboard') }}</span>
+                        <span class="dot"></span> {{ __('app.nav.dashboard') }}
                     </a>
                 @endif
 
                 @if ($canRfq)
                     <a class="nav-link {{ request()->routeIs('rfqs.*') ? 'active' : '' }}" href="{{ route('rfqs.index') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12a2 2 0 0 1 2 2v14H4V5a2 2 0 0 1 2-2Z"></path><path d="M8 7h8M8 11h8M8 15h5"></path></svg></span><span class="nav-text">{{ __('app.nav.rfq') }}</span>
+                        <span class="dot"></span> {{ __('app.nav.rfq') }}
                     </a>
                 @endif
 
                 @if ($canVendors)
                     <a class="nav-link {{ request()->routeIs('vendors.*') ? 'active' : '' }}" href="{{ route('vendors.index') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span><span class="nav-text">{{ __('app.nav.vendors') }}</span>
+                        <span class="dot"></span> {{ __('app.nav.vendors') }}
                     </a>
                 @endif
 
                 @if ($canLocal)
                     <a class="nav-link {{ request()->routeIs('purchasing.local') ? 'active' : '' }}" href="{{ route('purchasing.local') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10 12 3l9 7v10H3V10Z"></path><path d="M9 20v-6h6v6"></path></svg></span><span class="nav-text">{{ __('app.nav.local_purchasing') }}</span>
+                        <span class="dot"></span> {{ __('app.nav.local_purchasing') }}
                     </a>
                 @endif
 
                 @if ($canForeign)
                     <a class="nav-link {{ request()->routeIs('purchasing.foreign') ? 'active' : '' }}" href="{{ route('purchasing.foreign') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg></span><span class="nav-text">{{ __('app.nav.foreign_purchasing') }}</span>
+                        <span class="dot"></span> {{ __('app.nav.foreign_purchasing') }}
                     </a>
                 @endif
 
                 @if ($canMarket)
                     <a class="nav-link {{ request()->routeIs('purchasing.market') ? 'active' : '' }}" href="{{ route('purchasing.market') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4z"></path><path d="M8 9h8M8 13h5"></path></svg></span><span class="nav-text">{{ __('app.nav.local_market') }}</span>
+                        <span class="dot"></span> {{ __('app.nav.local_market') }}
                     </a>
                 @endif
 
                 @if ($canAdministration)
                     <a class="nav-link {{ request()->routeIs('administration.*') || request()->routeIs('markets.*') || request()->routeIs('order_types.*') || request()->routeIs('proposed_methods.*') ? 'active' : '' }}" href="{{ route('administration.index') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span><span class="nav-text">{{ __('app.nav.administration') }}</span>
+                        <span class="dot"></span> {{ __('app.nav.administration') }}
                     </a>
                 @endif
 
                 @if ($canUsers || $canRoles || $canAudit)
                     <details class="nav-group" @if ($settingsActive) open @endif>
                         <summary class="nav-link {{ $settingsActive ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"></path><circle cx="12" cy="12" r="3.5"></circle></svg></span><span class="nav-text">{{ __('app.nav.settings') }}</span>
+                            <span class="dot"></span> {{ __('app.nav.settings') }}
                             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M6 9l6 6 6-6"></path>
                             </svg>
@@ -521,19 +472,19 @@
                         <div class="subnav">
                             @if ($canUsers)
                                 <a class="nav-link sub {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
-                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"></circle><path d="M3 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1M16 5a3 3 0 0 1 0 6M17 15h1a3 3 0 0 1 3 3v1"></path></svg></span><span class="nav-text">{{ __('app.nav.users') }}</span>
+                                    <span class="dot"></span> {{ __('app.nav.users') }}
                                 </a>
                             @endif
 
                             @if ($canRoles)
                                 <a class="nav-link sub {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
-                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 20 7v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4Z"></path><path d="m9 12 2 2 4-4"></path></svg></span><span class="nav-text">{{ __('app.nav.roles') }}</span>
+                                    <span class="dot"></span> {{ __('app.nav.roles') }}
                                 </a>
                             @endif
 
                             @if ($canAudit)
                                 <a class="nav-link sub {{ request()->routeIs('audit.*') ? 'active' : '' }}" href="{{ route('audit.index') }}">
-                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"></path><path d="M8 8h8M8 12h5M8 16h8"></path></svg></span><span class="nav-text">{{ __('app.nav.audit') }}</span>
+                                    <span class="dot"></span> {{ __('app.nav.audit') }}
                                 </a>
                             @endif
                         </div>
@@ -547,7 +498,7 @@
                     <button type="submit" class="btn btn-ghost btn-block btn-sm">{{ __('app.nav.sign_out') }}</button>
                 </form>
             </div>
-        </header>
+        </aside>
 
         <div class="main">
             <header class="topbar">

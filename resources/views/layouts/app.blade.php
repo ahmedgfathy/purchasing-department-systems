@@ -615,9 +615,9 @@
         .pwa-install[hidden] { display:none; } .pwa-install__icon { width:42px; height:42px; flex:0 0 42px; padding:5px; border-radius:10px; background:#fff; } .pwa-install__icon img { width:100%; height:100%; display:block; } .pwa-install__content { min-width:0; } .pwa-install__content strong { display:block; font-size:14px; } .pwa-install__content p,.pwa-install__content small { display:block; margin:2px 0 0; color:var(--muted); font-size:12px; } .pwa-install__actions { display:flex; gap:6px; flex:0 0 auto; } [dir="rtl"] .pwa-install { text-align:right; }
         [data-fullscreen-toggle] svg { width:16px; height:16px; }
         body.app-expanded { overflow: hidden; }
-        body.app-expanded .app-shell { height: 100vh; min-height: 100vh; }
-        body.app-expanded .sidebar, body.app-expanded .main { height: 100vh; }
-        body.app-expanded .main { overflow: auto; }
+        body.app-expanded .app-shell { height: auto; min-height: 100vh; }
+        body.app-expanded .sidebar { height: auto; }
+        body.app-expanded .main { height: calc(100vh - 64px); overflow: auto; }
         @media (max-width:600px) { .pwa-install { inset-inline:12px; bottom:12px; max-width:none; } .pwa-install__actions { flex-direction:column; } }
     </style>
     <script>

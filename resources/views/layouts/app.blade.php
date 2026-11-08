@@ -427,7 +427,8 @@
         .brand .brand-company { font-size: 12px; white-space: nowrap; }
         .brand .brand-sub { font-size: 13px; white-space: nowrap; }
         .sidebar-toggle { display: none; }
-        .nav, .sidebar.is-collapsed .nav { flex-direction: row; align-items: center; gap: 3px; min-width: 0; overflow-x: auto; }
+        .nav, .sidebar.is-collapsed .nav { flex-direction: row; align-items: center; gap: 3px; min-width: 0; overflow-x: auto; scrollbar-width: none; }
+        .nav::-webkit-scrollbar, .sidebar.is-collapsed .nav::-webkit-scrollbar { display: none; }
         .nav-label { display: none; }
         .nav-link, .sidebar.is-collapsed .nav-link { justify-content: flex-start; padding: 8px 10px; font-size: 13px; white-space: nowrap; }
         .nav-text, .sidebar.is-collapsed .nav-text { display: inline; }

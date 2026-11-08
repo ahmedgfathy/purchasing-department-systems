@@ -87,17 +87,18 @@
             top: 0;
             height: 100vh;
         }
-        .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 10px; padding: 4px 10px; }
+        .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 8px; padding: 4px 10px; }
         .brand-logo-tile {
             display: inline-flex; align-items: center; justify-content: center;
             padding: 7px 11px; border-radius: 12px;
-            background: #ffffff; border: 1px solid var(--border);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, .45);
+            background: #ffffff; border: 0;
+            box-shadow: none;
         }
-        [data-theme="light"] .brand-logo-tile { box-shadow: 0 8px 20px rgba(37, 99, 235, .14); }
-        .brand-logo-tile img { display: block; height: 46px; width: auto; min-width: 118px; }
-        .brand .brand-company { display: block; font-size: 17px; font-weight: 800; letter-spacing: 0; color: var(--text); margin-top: 2px; }
-        .brand .brand-sub { font-size: 18px; font-weight: 600; letter-spacing: -.01em; color: var(--muted); margin-top: -6px; }
+        [data-theme="light"] .brand-logo-tile { box-shadow: none; }
+        .brand-logo-tile img { display: block; height: 78px; width: auto; min-width: 105px; }
+        .brand-copy { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; min-width: 0; }
+        .brand .brand-company { display: block; font-size: 16px; font-weight: 800; letter-spacing: 0; color: var(--text); line-height: 1.25; }
+        .brand .brand-sub { font-size: 17px; font-weight: 600; letter-spacing: -.01em; color: var(--muted); line-height: 1.25; }
         .nav { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; min-height: 0; padding-inline-end: 2px; scrollbar-width: thin; }
         .nav-label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); padding: 0 10px; margin: 10px 0 4px; }
         .nav-link {
@@ -410,8 +411,10 @@
                 <span class="brand-logo-tile">
                     <img src="{{ asset('images/logo.svg') }}" alt="{{ config('app.name') }} logo">
                 </span>
-                <span class="brand-company">خدمات البترول البحرية</span>
-                <span class="brand-sub">{{ __('app.brand_subtitle') }}</span>
+                <span class="brand-copy">
+                    <span class="brand-company">خدمات البترول البحرية</span>
+                    <span class="brand-sub">{{ __('app.brand_subtitle') }}</span>
+                </span>
             </a>
 
             <nav class="nav">

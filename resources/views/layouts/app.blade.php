@@ -396,6 +396,7 @@
             $canLocal = auth()->user()->hasPermission('purchases.local.view');
             $canForeign = auth()->user()->hasPermission('purchases.foreign.view');
             $canMarket = auth()->user()->hasPermission('market.view');
+            $canAdministration = auth()->user()->hasAnyPermission(['departments.view', 'locations.view', 'priorities.view', 'currencies.view', 'units.view', 'markets.view', 'order_types.view', 'proposed_methods.view']);
         @endphp
 
         <aside class="sidebar">
@@ -442,6 +443,12 @@
                 @if ($canMarket)
                     <a class="nav-link {{ request()->routeIs('purchasing.market') ? 'active' : '' }}" href="{{ route('purchasing.market') }}">
                         <span class="dot"></span> {{ __('app.nav.local_market') }}
+                    </a>
+                @endif
+
+                @if ($canAdministration)
+                    <a class="nav-link {{ request()->routeIs('administration.*') || request()->routeIs('markets.*') || request()->routeIs('order_types.*') || request()->routeIs('proposed_methods.*') ? 'active' : '' }}" href="{{ route('administration.index') }}">
+                        <span class="dot"></span> {{ __('app.nav.administration') }}
                     </a>
                 @endif
 

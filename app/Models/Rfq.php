@@ -23,7 +23,9 @@ class Rfq extends Model
         'project',
         'vessel',
         'requesting_department',
+        'department_id',
         'location',
+        'location_id',
         'cost_center',
         'contact_name',
         'contact_code',
@@ -40,7 +42,10 @@ class Rfq extends Model
         'description',
         'status',
         'priority',
+        'priority_id',
         'currency',
+        'currency_id',
+        'budget_currency_id',
         'needed_by',
         'notes',
         'requested_by',
@@ -139,6 +144,31 @@ class Rfq extends Model
         return $this->belongsTo(ProposedMethod::class);
     }
 
+    public function department(): BelongsTo
+    {
+        return $this->belongsTo(RfqDepartment::class, 'department_id');
+    }
+
+    public function locationOption(): BelongsTo
+    {
+        return $this->belongsTo(RfqLocation::class, 'location_id');
+    }
+
+    public function priorityOption(): BelongsTo
+    {
+        return $this->belongsTo(RfqPriority::class, 'priority_id');
+    }
+
+    public function currencyOption(): BelongsTo
+    {
+        return $this->belongsTo(RfqCurrency::class, 'currency_id');
+    }
+
+    public function budgetCurrencyOption(): BelongsTo
+    {
+        return $this->belongsTo(RfqCurrency::class, 'budget_currency_id');
+    }
+
     public function statusLabel(): string
     {
         return __('app.rfq.statuses.'.$this->status);
@@ -157,7 +187,7 @@ class Rfq extends Model
 
     public function priorityLabel(): string
     {
-        return __('app.rfq.priorities.'.$this->priority);
+        return $this->priorityOption?->name ?? __('app.rfq.priorities.'.$this->priority);
     }
 
     public function priorityColor(): string

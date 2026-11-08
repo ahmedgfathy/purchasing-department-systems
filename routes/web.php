@@ -10,6 +10,7 @@ use App\Http\Controllers\ProposedMethodController;
 use App\Http\Controllers\ProfileController;
 use App\Http\Controllers\PurchasingController;
 use App\Http\Controllers\RfqController;
+use App\Http\Controllers\RfqLookupController;
 use App\Http\Controllers\RoleController;
 use App\Http\Controllers\UserController;
 use App\Http\Controllers\VendorController;
@@ -146,6 +147,23 @@ Route::middleware('auth')->group(function () {
             ->middleware('permission:proposed_methods.manage')->name('update');
         Route::delete('/{proposedMethod}', [ProposedMethodController::class, 'destroy'])
             ->middleware('permission:proposed_methods.manage')->name('destroy');
+    });
+
+    Route::prefix('administration')->name('administration.')->group(function () {
+        Route::get('/', [RfqLookupController::class, 'administration'])
+            ->middleware('permission:departments.view,locations.view,priorities.view,currencies.view,units.view,markets.view,order_types.view,proposed_methods.view')->name('index');
+        Route::get('/{type}', [RfqLookupController::class, 'index'])
+            ->middleware('permission:departments.view,locations.view,priorities.view,currencies.view,units.view')->name('lookup.index');
+        Route::get('/{type}/create', [RfqLookupController::class, 'create'])
+            ->middleware('permission:departments.manage,locations.manage,priorities.manage,currencies.manage,units.manage')->name('lookup.create');
+        Route::post('/{type}', [RfqLookupController::class, 'store'])
+            ->middleware('permission:departments.manage,locations.manage,priorities.manage,currencies.manage,units.manage')->name('lookup.store');
+        Route::get('/{type}/{id}/edit', [RfqLookupController::class, 'edit'])
+            ->middleware('permission:departments.manage,locations.manage,priorities.manage,currencies.manage,units.manage')->name('lookup.edit');
+        Route::put('/{type}/{id}', [RfqLookupController::class, 'update'])
+            ->middleware('permission:departments.manage,locations.manage,priorities.manage,currencies.manage,units.manage')->name('lookup.update');
+        Route::delete('/{type}/{id}', [RfqLookupController::class, 'destroy'])
+            ->middleware('permission:departments.manage,locations.manage,priorities.manage,currencies.manage,units.manage')->name('lookup.destroy');
     });
 
     Route::prefix('vendors')->name('vendors.')->group(function () {

@@ -96,11 +96,9 @@
                 <thead>
                     <tr>
                         <th>{{ __('app.rfq.row_number') }}</th>
-                        <th>{{ __('app.rfq.website_service') }}</th>
-                        <th>{{ __('app.rfq.url') }}</th>
-                        <th>{{ __('app.rfq.host') }}</th>
-                        <th>{{ __('app.rfq.company_host') }}</th>
-                        <th>{{ __('app.rfq.host_country') }}</th>
+                        <th>{{ __('app.rfq.description') }}</th>
+                        <th>{{ __('app.rfq.quantity') }}</th>
+                        <th>{{ __('app.rfq.unit') }}</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -108,10 +106,8 @@
                         <tr>
                             <td class="cell-sub">{{ $loop->iteration }}</td>
                             <td class="cell-title">{{ $item->description }}</td>
-                            <td class="cell-sub">{{ $item->url ?: '—' }}</td>
-                            <td class="cell-sub">{{ $item->host ?: '—' }}</td>
-                            <td class="cell-sub">{{ $item->company_host ?: '—' }}</td>
-                            <td class="cell-sub">{{ $item->host_country ?: '—' }}</td>
+                            <td class="cell-sub">{{ $item->quantity }}</td>
+                            <td class="cell-sub">{{ $item->unitOption?->name ?? $item->unit ?? '—' }}</td>
                         </tr>
                     @endforeach
                 </tbody>

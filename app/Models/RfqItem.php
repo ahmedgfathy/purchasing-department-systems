@@ -14,6 +14,7 @@ class RfqItem extends Model
         'specifications',
         'quantity',
         'unit',
+        'unit_id',
         'estimated_unit_price',
         'notes',
     ];
@@ -29,5 +30,10 @@ class RfqItem extends Model
     public function rfq(): BelongsTo
     {
         return $this->belongsTo(Rfq::class);
+    }
+
+    public function unitOption(): BelongsTo
+    {
+        return $this->belongsTo(RfqUnit::class, 'unit_id');
     }
 }

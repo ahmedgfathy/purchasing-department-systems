@@ -1,379 +1,82 @@
-<form method="POST" action="{{ $rfq ? route('rfqs.update', $rfq) : route('rfqs.store') }}">
+<style>
+    .rfq-form { max-width: 1180px; margin: 0 auto; }
+    .rfq-form__intro { display:flex; align-items:flex-start; justify-content:space-between; gap:24px; padding:22px 24px; margin-bottom:18px; border:1px solid var(--border); border-radius:16px; background:linear-gradient(135deg,rgba(99,102,241,.18),var(--surface)); }
+    .rfq-form__intro h2 { margin:0; font-size:20px; letter-spacing:-.02em; } .rfq-form__intro p { margin:5px 0 0; color:var(--muted); font-size:13px; }
+    .rfq-form__intro-badge { display:inline-flex; align-items:center; gap:7px; color:var(--blue); font-size:12px; font-weight:700; white-space:nowrap; } .rfq-form__intro-badge::before { content:''; width:8px; height:8px; border-radius:50%; background:currentColor; box-shadow:0 0 0 5px rgba(96,165,250,.12); }
+    .rfq-section { padding:24px; margin-bottom:18px; border:1px solid var(--border); border-radius:16px; background:var(--panel); box-shadow:var(--shadow); }
+    .rfq-section__header { display:flex; align-items:flex-start; gap:12px; margin-bottom:20px; } .rfq-section__number { display:grid; place-items:center; width:30px; height:30px; flex:0 0 30px; border-radius:9px; background:rgba(99,102,241,.16); color:var(--primary); font-size:13px; font-weight:800; } .rfq-section__header h3 { margin:0; font-size:17px; letter-spacing:-.01em; } .rfq-section__header p { margin:3px 0 0; color:var(--muted); font-size:13px; }
+    .rfq-grid { display:grid; grid-template-columns:repeat(12,minmax(0,1fr)); gap:0 16px; } .rfq-grid__field { grid-column:span 4; } .rfq-grid__field--wide { grid-column:span 6; } .rfq-grid__field--full { grid-column:1/-1; } .rfq-grid .field { margin-bottom:18px; } .rfq-grid .field label { display:flex; align-items:center; gap:5px; } .rfq-grid .field label abbr,.rfq-form__footer abbr { color:var(--danger); text-decoration:none; } .rfq-grid input,.rfq-grid select,.rfq-grid textarea { min-height:42px; } .rfq-grid textarea { resize:vertical; min-height:92px; }
+    .rfq-items { padding:0; overflow:hidden; } .rfq-items .rfq-section__header { padding:24px 24px 0; margin-bottom:16px; } .rfq-items__body { padding:0 24px 24px; }
+    .rfq-item { padding:16px; margin-top:12px; border:1px solid var(--border); border-radius:12px; background:var(--surface-strong); } .rfq-item:first-child { margin-top:0; } .rfq-item__top { display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px; } .rfq-item__title { display:flex; align-items:center; gap:9px; font-size:13px; font-weight:700; } .rfq-item__index { display:grid; place-items:center; width:25px; height:25px; border-radius:7px; background:var(--primary); color:#fff; font-size:12px; }
+    .rfq-item__grid { display:grid; grid-template-columns:2fr .8fr 1fr; gap:12px; } .rfq-item .field { margin-bottom:0; } .rfq-item .field label { font-size:11px; color:var(--muted); } .rfq-item input,.rfq-item select { min-height:39px; padding:8px 10px; }
+    .rfq-form__footer { display:flex; align-items:center; justify-content:space-between; gap:16px; padding:16px 20px; margin-top:4px; border:1px solid var(--border); border-radius:14px; background:var(--panel); box-shadow:var(--shadow); } .rfq-form__footer-note { color:var(--muted); font-size:12px; } .rfq-form__actions { display:flex; gap:8px; }
+    @media (max-width:1050px) { .rfq-grid__field,.rfq-grid__field--wide { grid-column:span 6; } }
+    @media (max-width:680px) { .rfq-form__intro,.rfq-form__footer { align-items:stretch; flex-direction:column; } .rfq-section { padding:18px; } .rfq-items .rfq-section__header { padding:18px 18px 0; } .rfq-items__body { padding:0 18px 18px; } .rfq-grid__field,.rfq-grid__field--wide { grid-column:1/-1; } .rfq-item__grid { grid-template-columns:1fr; } .rfq-form__actions { width:100%; } .rfq-form__actions .btn { flex:1; } }
+</style>
+
+<form method="POST" action="{{ $rfq ? route('rfqs.update', $rfq) : route('rfqs.store') }}" class="rfq-form">
     @csrf
-    @if ($rfq)
-        @method('PUT')
-    @endif
+    @if ($rfq) @method('PUT') @endif
 
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="title">{{ __('app.rfq.title_field') }}</label>
-                <input id="title" type="text" name="title" value="{{ old('title', $rfq?->title) }}" required maxlength="255">
-                @error('title') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="project">{{ __('app.rfq.project') }}</label>
-                <input id="project" type="text" name="project" value="{{ old('project', $rfq?->project) }}" maxlength="255">
-                @error('project') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
+    <div class="rfq-form__intro"><div><h2>{{ $rfq ? __('app.rfq.edit_heading') : __('app.rfq.create_heading') }}</h2><p>{{ __('app.rfq.details_sub') }}</p></div><span class="rfq-form__intro-badge">{{ $rfq ? __('app.rfq.save_changes') : __('app.rfq.new') }}</span></div>
 
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="vessel">{{ __('app.rfq.vessel') }}</label>
-                <input id="vessel" type="text" name="vessel" value="{{ old('vessel', $rfq?->vessel) }}" maxlength="255">
-                @error('vessel') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="requesting_department">{{ __('app.rfq.requesting_department') }}</label>
-                <input id="requesting_department" type="text" name="requesting_department" value="{{ old('requesting_department', $rfq?->requesting_department) }}" maxlength="255">
-                @error('requesting_department') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
+    <section class="rfq-section"><div class="rfq-section__header"><span class="rfq-section__number">01</span><div><h3>{{ __('app.rfq.details') }}</h3><p>{{ __('app.rfq.details_sub') }}</p></div></div><div class="rfq-grid">
+        <div class="rfq-grid__field rfq-grid__field--wide"><div class="field"><label for="title">{{ __('app.rfq.title_field') }} <abbr title="required">*</abbr></label><input id="title" type="text" name="title" value="{{ old('title', $rfq?->title) }}" required maxlength="255" placeholder="{{ __('app.rfq.title_field') }}"><span class="hint">{{ __('app.rfq.title_field') }}</span>@error('title')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field rfq-grid__field--wide"><div class="field"><label for="project">{{ __('app.rfq.project') }}</label><input id="project" type="text" name="project" value="{{ old('project', $rfq?->project) }}" maxlength="255">@error('project')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="vessel">{{ __('app.rfq.vessel') }}</label><input id="vessel" type="text" name="vessel" value="{{ old('vessel', $rfq?->vessel) }}" maxlength="255">@error('vessel')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="department_id">{{ __('app.rfq.requesting_department') }}</label><select id="department_id" name="department_id"><option value="">{{ __('app.rfq.select_option') }}</option>@foreach ($departments as $department)<option value="{{ $department->id }}" @selected((string)old('department_id', $rfq?->department_id) === (string)$department->id)>{{ $department->name }}</option>@endforeach</select>@error('department_id')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="location_id">{{ __('app.rfq.location') }}</label><select id="location_id" name="location_id"><option value="">{{ __('app.rfq.select_option') }}</option>@foreach ($locations as $location)<option value="{{ $location->id }}" @selected((string)old('location_id', $rfq?->location_id) === (string)$location->id)>{{ $location->name }}</option>@endforeach</select>@error('location_id')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="cost_center">{{ __('app.rfq.cost_center') }}</label><input id="cost_center" type="text" name="cost_center" value="{{ old('cost_center', $rfq?->cost_center) }}" maxlength="100">@error('cost_center')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="contact_name">{{ __('app.rfq.contact_name') }}</label><input id="contact_name" type="text" name="contact_name" value="{{ old('contact_name', $rfq?->contact_name) }}" maxlength="255">@error('contact_name')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="contact_code">{{ __('app.rfq.contact_code') }}</label><input id="contact_code" type="text" name="contact_code" value="{{ old('contact_code', $rfq?->contact_code) }}" maxlength="100">@error('contact_code')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+    </div></section>
 
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="location">{{ __('app.rfq.location') }}</label>
-                <input id="location" type="text" name="location" value="{{ old('location', $rfq?->location) }}" maxlength="255">
-                @error('location') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="cost_center">{{ __('app.rfq.cost_center') }}</label>
-                <input id="cost_center" type="text" name="cost_center" value="{{ old('cost_center', $rfq?->cost_center) }}" maxlength="100">
-                @error('cost_center') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
+    <section class="rfq-section"><div class="rfq-section__header"><span class="rfq-section__number">02</span><div><h3>{{ __('app.rfq.preparation_date') }} &amp; {{ __('app.rfq.needed_by') }}</h3><p>{{ __('app.rfq.service_delivery_period') }}</p></div></div><div class="rfq-grid">
+        <div class="rfq-grid__field"><div class="field"><label for="material_req_no">{{ __('app.rfq.material_req_no') }}</label><input id="material_req_no" type="text" name="material_req_no" value="{{ old('material_req_no', $rfq?->material_req_no) }}" maxlength="100">@error('material_req_no')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="requisition_rec_date">{{ __('app.rfq.requisition_rec_date') }}</label><input id="requisition_rec_date" type="date" name="requisition_rec_date" value="{{ old('requisition_rec_date', $rfq?->requisition_rec_date?->format('Y-m-d')) }}">@error('requisition_rec_date')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="preparation_date">{{ __('app.rfq.preparation_date') }}</label><input id="preparation_date" type="date" name="preparation_date" value="{{ old('preparation_date', $rfq?->preparation_date?->format('Y-m-d')) }}">@error('preparation_date')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="needed_by">{{ __('app.rfq.needed_by') }}</label><input id="needed_by" type="date" name="needed_by" value="{{ old('needed_by', $rfq?->needed_by?->format('Y-m-d')) }}">@error('needed_by')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field rfq-grid__field--wide"><div class="field"><label for="service_delivery_period">{{ __('app.rfq.service_delivery_period') }}</label><input id="service_delivery_period" type="text" name="service_delivery_period" value="{{ old('service_delivery_period', $rfq?->service_delivery_period) }}" maxlength="255">@error('service_delivery_period')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+    </div></section>
 
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="contact_name">{{ __('app.rfq.contact_name') }}</label>
-                <input id="contact_name" type="text" name="contact_name" value="{{ old('contact_name', $rfq?->contact_name) }}" maxlength="255">
-                @error('contact_name') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="contact_code">{{ __('app.rfq.contact_code') }}</label>
-                <input id="contact_code" type="text" name="contact_code" value="{{ old('contact_code', $rfq?->contact_code) }}" maxlength="100">
-                @error('contact_code') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
+    <section class="rfq-section"><div class="rfq-section__header"><span class="rfq-section__number">03</span><div><h3>{{ __('app.rfq.market') }} &amp; {{ __('app.rfq.proposed_method') }}</h3><p>{{ __('app.rfq.partial_order') }}</p></div></div><div class="rfq-grid">
+        <div class="rfq-grid__field"><div class="field"><label for="market_id">{{ __('app.rfq.market') }}</label><select id="market_id" name="market_id"><option value="">{{ __('app.rfq.select_option') }}</option>@foreach ($markets as $market)<option value="{{ $market->id }}" @selected((string) old('market_id', $rfq?->market_id) === (string)$market->id)>{{ $market->name }}</option>@endforeach</select>@error('market_id')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="order_type_id">{{ __('app.rfq.partial_order') }}</label><select id="order_type_id" name="order_type_id"><option value="">{{ __('app.rfq.select_option') }}</option>@foreach ($orderTypes as $orderType)<option value="{{ $orderType->id }}" @selected((string) old('order_type_id', $rfq?->order_type_id) === (string)$orderType->id)>{{ $orderType->name }}</option>@endforeach</select>@error('order_type_id')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="proposed_method_id">{{ __('app.rfq.proposed_method') }}</label><select id="proposed_method_id" name="proposed_method_id"><option value="">{{ __('app.rfq.select_option') }}</option>@foreach ($proposedMethods as $proposedMethod)<option value="{{ $proposedMethod->id }}" @selected((string) old('proposed_method_id', $rfq?->proposed_method_id) === (string)$proposedMethod->id)>{{ $proposedMethod->name }}</option>@endforeach</select>@error('proposed_method_id')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="ref_order_no">{{ __('app.rfq.ref_order_no') }}</label><input id="ref_order_no" type="text" name="ref_order_no" value="{{ old('ref_order_no', $rfq?->ref_order_no) }}" maxlength="255">@error('ref_order_no')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="priority_id">{{ __('app.rfq.priority') }} <abbr title="required">*</abbr></label><select id="priority_id" name="priority_id" required>@foreach ($priorities as $priority)<option value="{{ $priority->id }}" @selected((string)old('priority_id', $rfq?->priority_id) === (string)$priority->id)>{{ $priority->name }}</option>@endforeach</select>@error('priority_id')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="currency_id">{{ __('app.rfq.currency') }} <abbr title="required">*</abbr></label><select id="currency_id" name="currency_id" required>@foreach ($currencies as $currency)<option value="{{ $currency->id }}" @selected((string)old('currency_id', $rfq?->currency_id) === (string)$currency->id)>{{ $currency->code }} — {{ $currency->name }}</option>@endforeach</select>@error('currency_id')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+    </div></section>
 
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="material_req_no">{{ __('app.rfq.material_req_no') }}</label>
-                <input id="material_req_no" type="text" name="material_req_no" value="{{ old('material_req_no', $rfq?->material_req_no) }}" maxlength="100">
-                @error('material_req_no') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="requisition_rec_date">{{ __('app.rfq.requisition_rec_date') }}</label>
-                <input id="requisition_rec_date" type="date" name="requisition_rec_date" value="{{ old('requisition_rec_date', $rfq?->requisition_rec_date?->format('Y-m-d')) }}">
-                @error('requisition_rec_date') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
+    <section class="rfq-section"><div class="rfq-section__header"><span class="rfq-section__number">04</span><div><h3>{{ __('app.rfq.description') }} &amp; {{ __('app.rfq.estimated_budget') }}</h3><p>{{ __('app.rfq.notes') }}</p></div></div><div class="rfq-grid">
+        <div class="rfq-grid__field rfq-grid__field--wide"><div class="field"><label for="estimated_budget">{{ __('app.rfq.estimated_budget') }}</label><input id="estimated_budget" type="number" name="estimated_budget" value="{{ old('estimated_budget', $rfq?->estimated_budget) }}" step="0.01" min="0">@error('estimated_budget')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field"><div class="field"><label for="budget_currency_id">{{ __('app.rfq.budget_currency') }}</label><select id="budget_currency_id" name="budget_currency_id"><option value="">{{ __('app.rfq.select_option') }}</option>@foreach ($currencies as $currency)<option value="{{ $currency->id }}" @selected((string)old('budget_currency_id', $rfq?->budget_currency_id) === (string)$currency->id)>{{ $currency->code }} — {{ $currency->name }}</option>@endforeach</select>@error('budget_currency_id')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field rfq-grid__field--full"><div class="field"><label for="description">{{ __('app.rfq.description') }}</label><textarea id="description" name="description" rows="3">{{ old('description', $rfq?->description) }}</textarea>@error('description')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+        <div class="rfq-grid__field rfq-grid__field--full"><div class="field"><label for="notes">{{ __('app.rfq.notes') }}</label><textarea id="notes" name="notes" rows="2" maxlength="5000">{{ old('notes', $rfq?->notes) }}</textarea>@error('notes')<div class="error-text">{{ $message }}</div>@enderror</div></div>
+    </div></section>
 
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="preparation_date">{{ __('app.rfq.preparation_date') }}</label>
-                <input id="preparation_date" type="date" name="preparation_date" value="{{ old('preparation_date', $rfq?->preparation_date?->format('Y-m-d')) }}">
-                @error('preparation_date') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="service_delivery_period">{{ __('app.rfq.service_delivery_period') }}</label>
-                <input id="service_delivery_period" type="text" name="service_delivery_period" value="{{ old('service_delivery_period', $rfq?->service_delivery_period) }}" maxlength="255">
-                @error('service_delivery_period') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
+    <section class="rfq-section rfq-items"><div class="rfq-section__header"><span class="rfq-section__number">05</span><div><h3>{{ __('app.rfq.items') }}</h3><p>{{ __('app.rfq.items_sub') }}</p></div><button type="button" id="add-item" class="btn btn-secondary btn-sm" style="margin-inline-start:auto">+ {{ __('app.rfq.add_item') }}</button></div><div class="rfq-items__body">
+        @error('items')<div class="alert error">{{ $message }}</div>@enderror
+        <div id="items">@foreach ($oldItems as $index => $item)<div class="rfq-item"><div class="rfq-item__top"><div class="rfq-item__title"><span class="rfq-item__index">{{ $loop->iteration }}</span>{{ __('app.rfq.items') }}</div><button type="button" class="btn btn-ghost btn-sm" data-remove-item>{{ __('app.rfq.remove') }}</button></div><div class="rfq-item__grid">
+            <div class="field"><label>{{ __('app.rfq.description') }}</label><textarea name="items[{{ $index }}][description]" rows="2" required>{{ $item['description'] ?? '' }}</textarea>@error('items.'.$index.'.description')<div class="error-text">{{ $message }}</div>@enderror</div>
+            <div class="field"><label>{{ __('app.rfq.quantity') }}</label><input type="number" name="items[{{ $index }}][quantity]" value="{{ $item['quantity'] ?? 1 }}" step="0.01" min="0.01" required>@error('items.'.$index.'.quantity')<div class="error-text">{{ $message }}</div>@enderror</div>
+            <div class="field"><label>{{ __('app.rfq.unit') }}</label><select name="items[{{ $index }}][unit_id]"><option value="">{{ __('app.rfq.select_option') }}</option>@foreach ($units as $unit)<option value="{{ $unit->id }}" @selected((string)($item['unit_id'] ?? '') === (string)$unit->id)>{{ $unit->code }} — {{ $unit->name }}</option>@endforeach</select>@error('items.'.$index.'.unit_id')<div class="error-text">{{ $message }}</div>@enderror</div>
+        </div></div>@endforeach</div>
+    </div></section>
 
-    <!-- Dropdown Fields -->
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="market_id">{{ __('app.rfq.market') }}</label>
-                <select id="market_id" name="market_id">
-                    <option value="">{{ __('app.rfq.select_option') }}</option>
-                    @foreach ($markets as $market)
-                        <option value="{{ $market->id }}" @selected(old('market_id', $rfq?->market_id) === $market->id)>{{ $market->name }}</option>
-                    @endforeach
-                </select>
-                @error('market_id') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="order_type_id">{{ __('app.rfq.partial_order') }}</label>
-                <select id="order_type_id" name="order_type_id">
-                    <option value="">{{ __('app.rfq.select_option') }}</option>
-                    @foreach ($orderTypes as $orderType)
-                        <option value="{{ $orderType->id }}" @selected(old('order_type_id', $rfq?->order_type_id) === $orderType->id)>{{ $orderType->name }}</option>
-                    @endforeach
-                </select>
-                @error('order_type_id') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
-
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="proposed_method_id">{{ __('app.rfq.proposed_method') }}</label>
-                <select id="proposed_method_id" name="proposed_method_id">
-                    <option value="">{{ __('app.rfq.select_option') }}</option>
-                    @foreach ($proposedMethods as $proposedMethod)
-                        <option value="{{ $proposedMethod->id }}" @selected(old('proposed_method_id', $rfq?->proposed_method_id) === $proposedMethod->id)>{{ $proposedMethod->name }}</option>
-                    @endforeach
-                </select>
-                @error('proposed_method_id') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="ref_order_no">{{ __('app.rfq.ref_order_no') }}</label>
-                <input id="ref_order_no" type="text" name="ref_order_no" value="{{ old('ref_order_no', $rfq?->ref_order_no) }}" maxlength="255">
-                @error('ref_order_no') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
-
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="estimated_budget">{{ __('app.rfq.estimated_budget') }}</label>
-                <input id="estimated_budget" type="number" name="estimated_budget" value="{{ old('estimated_budget', $rfq?->estimated_budget) }}" step="0.01" min="0">
-                @error('estimated_budget') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="budget_currency">{{ __('app.rfq.budget_currency') }}</label>
-                <input id="budget_currency" type="text" name="budget_currency" value="{{ old('budget_currency', $rfq?->budget_currency) }}" maxlength="10" placeholder="EGP">
-                @error('budget_currency') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
-
-    <div class="field" style="margin-bottom: 16px;">
-        <label for="description">{{ __('app.rfq.description') }}</label>
-        <textarea id="description" name="description" rows="3">{{ old('description', $rfq?->description) }}</textarea>
-        @error('description') <div class="error-text">{{ $message }}</div> @enderror
-    </div>
-
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="priority">{{ __('app.rfq.priority') }}</label>
-                <select id="priority" name="priority" required>
-                    @foreach (\App\Models\Rfq::priorities() as $value => $label)
-                        <option value="{{ $value }}" @selected(old('priority', $rfq?->priority ?? 'normal') === $value)>{{ __('app.rfq.priorities.'.$value) }}</option>
-                    @endforeach
-                </select>
-                @error('priority') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="currency">{{ __('app.rfq.currency') }}</label>
-                <select id="currency" name="currency" required>
-                    @foreach (\App\Models\Rfq::currencies() as $currency)
-                        <option value="{{ $currency }}" @selected(old('currency', $rfq?->currency ?? 'USD') === $currency)>{{ $currency }}</option>
-                    @endforeach
-                </select>
-                @error('currency') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
-
-    <div style="display: flex; gap: 16px; margin-bottom: 16px;">
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="needed_by">{{ __('app.rfq.needed_by') }}</label>
-                <input id="needed_by" type="date" name="needed_by" value="{{ old('needed_by', $rfq?->needed_by?->format('Y-m-d')) }}">
-                @error('needed_by') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-        <div style="flex: 1;">
-            <div class="field">
-                <label for="notes">{{ __('app.rfq.notes') }}</label>
-                <input id="notes" type="text" name="notes" value="{{ old('notes', $rfq?->notes) }}" maxlength="5000">
-                @error('notes') <div class="error-text">{{ $message }}</div> @enderror
-            </div>
-        </div>
-    </div>
-
-    <!-- Items Section -->
-    <div class="card">
-        <div class="card-header">
-            <div>
-                <h2>{{ __('app.rfq.items') }}</h2>
-                <p>{{ __('app.rfq.items_sub') }}</p>
-            </div>
-            <button type="button" id="add-item" class="btn btn-secondary btn-sm">{{ __('app.rfq.add_item') }}</button>
-        </div>
-
-        @error('items') <div class="alert error">{{ $message }}</div> @enderror
-
-        <div id="items">
-            @foreach ($oldItems as $index => $item)
-                <div class="item-row">
-                    <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
-                        <div style="flex: 1; min-width: 140px;">
-                            <div class="field">
-                                <label>{{ __('app.rfq.description') }}</label>
-                                <input type="text" name="items[{{ $index }}][description]" value="{{ $item['description'] ?? '' }}" required>
-                                @error('items.'.$index.'.description') <div class="error-text">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div style="flex: 0.5; min-width: 120px;">
-                            <div class="field">
-                                <label>{{ __('app.rfq.url') }}</label>
-                                <input type="text" name="items[{{ $index }}][url]" value="{{ $item['url'] ?? '' }}" placeholder="https://example.com">
-                                @error('items.'.$index.'.url') <div class="error-text">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div style="flex: 0.5; min-width: 120px;">
-                            <div class="field">
-                                <label>{{ __('app.rfq.specifications') }}</label>
-                                <input type="text" name="items[{{ $index }}][specifications]" value="{{ $item['specifications'] ?? '' }}" placeholder="Enter specifications">
-                                @error('items.'.$index.'.specifications') <div class="error-text">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div style="flex: 0.25; min-width: 80px;">
-                            <div class="field">
-                                <label>{{ __('app.rfq.quantity') }}</label>
-                                <input type="number" name="items[{{ $index }}][quantity]" value="{{ $item['quantity'] ?? 1 }}" step="0.01" min="0.01" required>
-                                @error('items.'.$index.'.quantity') <div class="error-text">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div style="flex: 0.25; min-width: 80px;">
-                            <div class="field">
-                                <label>{{ __('app.rfq.unit') }}</label>
-                                <input type="text" name="items[{{ $index }}][unit]" value="{{ $item['unit'] ?? '' }}" placeholder="EA, HR, etc.">
-                                @error('items.'.$index.'.unit') <div class="error-text">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div style="flex: 0.3; min-width: 90px;">
-                            <div class="field">
-                                <label>{{ __('app.rfq.estimated_unit_price') }}</label>
-                                <input type="number" name="items[{{ $index }}][estimated_unit_price]" value="{{ $item['estimated_unit_price'] ?? 0 }}" step="0.01" min="0">
-                                @error('items.'.$index.'.estimated_unit_price') <div class="error-text">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div style="flex: 0.5; min-width: 120px;">
-                            <div class="field">
-                                <label>{{ __('app.rfq.notes') }}</label>
-                                <input type="text" name="items[{{ $index }}][notes]" value="{{ $item['notes'] ?? '' }}" placeholder="Additional notes">
-                                @error('items.'.$index.'.notes') <div class="error-text">{{ $message }}</div> @enderror
-                            </div>
-                        </div>
-                        <div style="flex: 0; margin-left: auto;">
-                            <button type="button" class="btn btn-ghost btn-sm" data-remove-item>{{ __('app.rfq.remove') }}</button>
-                        </div>
-                    </div>
-                </div>
-            @endforeach
-        </div>
-    </div>
-
-    <div style="display:flex;gap:8px;margin-top:8px">
-        <button type="submit" class="btn btn-primary">{{ $rfq ? __('app.rfq.save_changes') : __('app.rfq.submit') }}</button>
-        <a href="{{ $rfq ? route('rfqs.show', $rfq) : route('rfqs.index') }}" class="btn btn-ghost">{{ __('app.rfq.cancel') }}</a>
-    </div>
+    <div class="rfq-form__footer"><span class="rfq-form__footer-note"><abbr title="required">*</abbr> {{ __('app.rfq.title_field') }}</span><div class="rfq-form__actions"><a href="{{ $rfq ? route('rfqs.show', $rfq) : route('rfqs.index') }}" class="btn btn-ghost">{{ __('app.rfq.cancel') }}</a><button type="submit" class="btn btn-primary">{{ $rfq ? __('app.rfq.save_changes') : __('app.rfq.submit') }}</button></div></div>
 </form>
 
-<template id="item-template">
-    <div class="item-row">
-        <div style="display: flex; gap: 10px; align-items: flex-end; flex-wrap: wrap;">
-            <div style="flex: 1; min-width: 140px;">
-                <div class="field">
-                    <label>{{ __('app.rfq.description') }}</label>
-                    <input type="text" name="items[__INDEX__][description]" value="" required>
-                </div>
-            </div>
-            <div style="flex: 0.5; min-width: 120px;">
-                <div class="field">
-                    <label>{{ __('app.rfq.url') }}</label>
-                    <input type="text" name="items[__INDEX__][url]" value="" placeholder="https://example.com">
-                </div>
-            </div>
-            <div style="flex: 0.5; min-width: 120px;">
-                <div class="field">
-                    <label>{{ __('app.rfq.specifications') }}</label>
-                    <input type="text" name="items[__INDEX__][specifications]" value="" placeholder="Enter specifications">
-                </div>
-            </div>
-            <div style="flex: 0.25; min-width: 80px;">
-                <div class="field">
-                    <label>{{ __('app.rfq.quantity') }}</label>
-                    <input type="number" name="items[__INDEX__][quantity]" value="1" step="0.01" min="0.01" required>
-                </div>
-            </div>
-            <div style="flex: 0.25; min-width: 80px;">
-                <div class="field">
-                    <label>{{ __('app.rfq.unit') }}</label>
-                    <input type="text" name="items[__INDEX__][unit]" value="" placeholder="EA, HR, etc.">
-                </div>
-            </div>
-            <div style="flex: 0.3; min-width: 90px;">
-                <div class="field">
-                    <label>{{ __('app.rfq.estimated_unit_price') }}</label>
-                    <input type="number" name="items[__INDEX__][estimated_unit_price]" value="0" step="0.01" min="0">
-                </div>
-            </div>
-            <div style="flex: 0.5; min-width: 120px;">
-                <div class="field">
-                    <label>{{ __('app.rfq.notes') }}</label>
-                    <input type="text" name="items[__INDEX__][notes]" value="" placeholder="Additional notes">
-                </div>
-            </div>
-            <div style="flex: 0; margin-left: auto;">
-                <button type="button" class="btn btn-ghost btn-sm" data-remove-item>{{ __('app.rfq.remove') }}</button>
-            </div>
-        </div>
-    </div>
-</template>
+<template id="item-template"><div class="rfq-item"><div class="rfq-item__top"><div class="rfq-item__title"><span class="rfq-item__index">#</span>{{ __('app.rfq.items') }}</div><button type="button" class="btn btn-ghost btn-sm" data-remove-item>{{ __('app.rfq.remove') }}</button></div><div class="rfq-item__grid">
+    <div class="field"><label>{{ __('app.rfq.description') }}</label><textarea name="items[__INDEX__][description]" rows="2" required></textarea></div><div class="field"><label>{{ __('app.rfq.quantity') }}</label><input type="number" name="items[__INDEX__][quantity]" value="1" step="0.01" min="0.01" required></div><div class="field"><label>{{ __('app.rfq.unit') }}</label><select name="items[__INDEX__][unit_id]"><option value="">{{ __('app.rfq.select_option') }}</option>@foreach ($units as $unit)<option value="{{ $unit->id }}">{{ $unit->code }} — {{ $unit->name }}</option>@endforeach</select></div>
+</div></div></template>
 
 <script>
     (function () {
-        var list = document.getElementById('items');
-        var template = document.getElementById('item-template');
-        var addButton = document.getElementById('add-item');
-        var nextIndex = {{ count($oldItems) }};
-
-        function bind(row) {
-            var remove = row.querySelector('[data-remove-item]');
-            if (remove) remove.addEventListener('click', function () {
-                if (list.querySelectorAll('.item-row').length > 1) row.remove();
-            });
-        }
-
-        list.querySelectorAll('.item-row').forEach(bind);
-        addButton.addEventListener('click', function () {
-            var wrapper = document.createElement('div');
-            wrapper.innerHTML = template.innerHTML.replaceAll('__INDEX__', String(nextIndex++)).trim();
-            var row = wrapper.firstElementChild;
-            list.appendChild(row);
-            bind(row);
-        });
+        var list = document.getElementById('items'), template = document.getElementById('item-template'), addButton = document.getElementById('add-item'), nextIndex = {{ count($oldItems) }};
+        function refreshIndexes() { list.querySelectorAll('.rfq-item__index').forEach(function (badge, index) { badge.textContent = index + 1; }); }
+        function bind(row) { var remove = row.querySelector('[data-remove-item]'); if (remove) remove.addEventListener('click', function () { if (list.querySelectorAll('.rfq-item').length > 1) { row.remove(); refreshIndexes(); } }); }
+        list.querySelectorAll('.rfq-item').forEach(bind); refreshIndexes();
+        addButton.addEventListener('click', function () { var wrapper = document.createElement('div'); wrapper.innerHTML = template.innerHTML.replaceAll('__INDEX__', String(nextIndex++)).trim(); var row = wrapper.firstElementChild; list.appendChild(row); bind(row); refreshIndexes(); row.querySelector('input').focus(); });
     })();
 </script>

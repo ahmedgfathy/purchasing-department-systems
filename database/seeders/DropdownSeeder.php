@@ -7,6 +7,11 @@ use Illuminate\Database\Seeder;
 use App\Models\Market;
 use App\Models\OrderType;
 use App\Models\ProposedMethod;
+use App\Models\RfqCurrency;
+use App\Models\RfqDepartment;
+use App\Models\RfqLocation;
+use App\Models\RfqPriority;
+use App\Models\RfqUnit;
 
 class DropdownSeeder extends Seeder
 {
@@ -15,72 +20,22 @@ class DropdownSeeder extends Seeder
      */
     public function run(): void
     {
-        // Markets
-        Market::insert([
-            [
-                'code' => 'LOCAL',
-                'name' => 'Local',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'FOREIGN',
-                'name' => 'Foreign',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        foreach ([
+            [Market::class, [['code' => 'LOCAL', 'name' => 'Local'], ['code' => 'FOREIGN', 'name' => 'Foreign']]],
+            [OrderType::class, [['code' => 'ACCEPTED', 'name' => 'Accepted'], ['code' => 'NOT_ACCEPTED', 'name' => 'Not Accepted']]],
+            [ProposedMethod::class, [['code' => 'OPEN_TENDER', 'name' => 'Open Tender'], ['code' => 'SELECTIVE_TENDER', 'name' => 'Selective Tender'], ['code' => 'DIRECT_PURCHASE', 'name' => 'Direct Purchase'], ['code' => 'RFQ', 'name' => 'Request for Quotation']]],
+        ] as [$model, $rows]) {
+            foreach ($rows as $row) $model::updateOrCreate(['code' => $row['code']], $row + ['status' => 'active']);
+        }
 
-        // Order Types (Partial Order)
-        OrderType::insert([
-            [
-                'code' => 'ACCEPTED',
-                'name' => 'Accepted',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'NOT_ACCEPTED',
-                'name' => 'Not Accepted',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
-
-        // Proposed Methods (Tender Types)
-        ProposedMethod::insert([
-            [
-                'code' => 'OPEN_TENDER',
-                'name' => 'Open Tender',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'SELECTIVE_TENDER',
-                'name' => 'Selective Tender',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'DIRECT_PURCHASE',
-                'name' => 'Direct Purchase',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-            [
-                'code' => 'RFQ',
-                'name' => 'Request for Quotation',
-                'status' => 'active',
-                'created_at' => now(),
-                'updated_at' => now(),
-            ],
-        ]);
+        foreach ([
+            [RfqPriority::class, [['code' => 'low', 'name' => 'Low'], ['code' => 'normal', 'name' => 'Normal'], ['code' => 'high', 'name' => 'High'], ['code' => 'urgent', 'name' => 'Urgent']]],
+            [RfqCurrency::class, array_map(fn (string $code) => ['code' => $code, 'name' => $code], ['USD', 'EGP', 'EUR', 'GBP', 'SAR', 'AED'])],
+            [RfqUnit::class, [['code' => 'EA', 'name' => 'Each'], ['code' => 'HR', 'name' => 'Hour'], ['code' => 'DAY', 'name' => 'Day'], ['code' => 'KG', 'name' => 'Kilogram'], ['code' => 'SET', 'name' => 'Set']]],
+            [RfqDepartment::class, [['code' => 'PROCUREMENT', 'name' => 'Procurement'], ['code' => 'OPERATIONS', 'name' => 'Operations'], ['code' => 'MAINTENANCE', 'name' => 'Maintenance'], ['code' => 'FINANCE', 'name' => 'Finance']]],
+            [RfqLocation::class, [['code' => 'HEAD_OFFICE', 'name' => 'Head office'], ['code' => 'WAREHOUSE', 'name' => 'Warehouse'], ['code' => 'PROJECT_SITE', 'name' => 'Project site']]],
+        ] as [$model, $rows]) {
+            foreach ($rows as $row) $model::updateOrCreate(['code' => $row['code']], $row + ['status' => 'active']);
+        }
     }
 }

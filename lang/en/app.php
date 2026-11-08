@@ -11,6 +11,7 @@ return [
     'theme' => [
         'toggle' => 'Toggle light / dark theme',
     ],
+    'sidebar' => ['toggle' => 'Expand or collapse sidebar'],
     'fullscreen' => ['toggle' => 'Toggle full screen'],
     'pwa' => ['title' => 'Install Purchasing System', 'message' => 'Install the app for faster access on this device.', 'help' => 'Use the install button to add it to your home screen or desktop.', 'install' => 'Install', 'later' => 'Later', 'browser_help' => 'Use your browser menu and choose “Install app” or “Add to Home screen”.', 'secure_help' => 'Installation requires HTTPS (or localhost). Open the secure site, then use the browser menu to install it.'],
 

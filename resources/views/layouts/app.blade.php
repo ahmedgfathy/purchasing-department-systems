@@ -419,7 +419,7 @@
 
         /* Navbar-only layout: navigation replaces the vertical sidebar. */
         .app-shell { display: block; }
-        .sidebar, .sidebar.is-collapsed { width: 100%; height: auto; min-height: 0; flex: none; position: sticky; z-index: 20; top: 0; flex-direction: row; align-items: center; gap: 18px; padding: 10px 22px; border: 0; border-bottom: 1px solid var(--border); }
+        .sidebar, .sidebar.is-collapsed { width: 100%; height: auto; min-height: 0; flex: none; position: sticky; z-index: 20; top: 0; flex-direction: row; flex-wrap: wrap; align-items: center; gap: 12px 18px; padding: 10px 22px; border: 0; border-bottom: 1px solid var(--border); }
         .brand, .sidebar.is-collapsed .brand { flex: 0 0 auto; flex-direction: row; align-items: center; gap: 9px; padding: 0; }
         .brand-logo-tile, .sidebar.is-collapsed .brand-logo-tile { padding: 3px; }
         .brand-logo-tile img, .sidebar.is-collapsed .brand-logo-tile img { height: 40px; min-width: 0; }
@@ -437,8 +437,10 @@
         .subnav { position: absolute; top: 100%; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 6px; margin: 0; min-width: 170px; box-shadow: var(--shadow); }
         .sidebar-footer, .sidebar.is-collapsed .sidebar-footer { flex: 0 0 auto; border: 0; padding: 0; }
         .sidebar-footer form .btn { width: auto; }
+        .sidebar .topbar { flex: 1 1 520px; display: flex; align-items: center; justify-content: flex-start; gap: 16px; min-width: 320px; padding: 0; border: 0; }
+        .sidebar .topbar-actions { flex: 0 0 auto; }
         .main { min-height: calc(100vh - 64px); }
-        @media (max-width: 860px) { .sidebar, .sidebar.is-collapsed { padding: 10px 14px; gap: 10px; overflow-x: auto; } .nav, .sidebar.is-collapsed .nav { flex: 0 0 auto; } .sidebar-footer, .sidebar.is-collapsed .sidebar-footer { margin-inline-start: auto; } }
+        @media (max-width: 860px) { .sidebar, .sidebar.is-collapsed { padding: 10px 14px; gap: 10px; overflow-x: auto; } .nav, .sidebar.is-collapsed .nav { flex: 0 0 auto; } .sidebar-footer, .sidebar.is-collapsed .sidebar-footer { margin-inline-start: auto; } .sidebar .topbar { flex-basis: 100%; min-width: 0; order: 5; } }
     </style>
 </head>
 <body>
@@ -547,14 +549,8 @@
                     <button type="submit" class="btn btn-ghost btn-block btn-sm">{{ __('app.nav.sign_out') }}</button>
                 </form>
             </div>
-        </header>
 
-        <div class="main">
-            <header class="topbar">
-                <div>
-                    <h1>@yield('heading', __('app.dashboard.heading'))</h1>
-                    <p>@yield('subheading', '')</p>
-                </div>
+            <div class="topbar">
                 <div class="topbar-actions">
                     <div class="utility-actions">
                         <a
@@ -579,8 +575,10 @@
                     </div>
                     @yield('actions')
                 </div>
-            </header>
+            </div>
+        </header>
 
+        <div class="main">
             <main class="content">
                 @if (session('status'))
                     <div class="alert success">{{ session('status') }}</div>

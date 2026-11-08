@@ -408,8 +408,6 @@
             </a>
 
             <nav class="nav">
-                <div class="nav-label">{{ __('app.nav.workspace') }}</div>
-
                 @if (auth()->user()->hasPermission('dashboard.view'))
                     <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
                         <span class="dot"></span> {{ __('app.nav.dashboard') }}

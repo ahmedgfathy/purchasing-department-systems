@@ -4,6 +4,11 @@
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <meta name="csrf-token" content="{{ csrf_token() }}">
+    <meta name="theme-color" content="#6366f1">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
     <title>@yield('title', __('app.dashboard.title')) · {{ config('app.name') }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
@@ -514,6 +519,10 @@
                             </svg>
                             <span>{{ __('app.language.switch_code') }}</span>
                         </a>
+                        <button type="button" class="icon-btn" data-fullscreen-toggle title="{{ __('app.fullscreen.toggle') }}" aria-label="{{ __('app.fullscreen.toggle') }}">
+                            <svg data-fullscreen-enter viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 16v5h-5"></path></svg>
+                            <svg data-fullscreen-exit viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="display:none"><path d="M9 3v6H3M15 3v6h6M9 21v-6H3M21 15h-6v6"></path></svg>
+                        </button>
                         @include('partials.theme-toggle')
                     </div>
                     @yield('actions')
@@ -544,5 +553,42 @@
             </main>
         </div>
     </div>
+    <div class="pwa-install" data-pwa-install hidden role="dialog" aria-modal="false" aria-labelledby="pwa-install-title">
+        <div class="pwa-install__icon"><img src="{{ asset('favicon.svg') }}" alt=""></div>
+        <div class="pwa-install__content"><strong id="pwa-install-title">{{ __('app.pwa.title') }}</strong><p>{{ __('app.pwa.message') }}</p><small data-pwa-help>{{ __('app.pwa.help') }}</small></div>
+        <div class="pwa-install__actions"><button type="button" class="btn btn-primary btn-sm" data-pwa-install-action>{{ __('app.pwa.install') }}</button><button type="button" class="btn btn-ghost btn-sm" data-pwa-dismiss>{{ __('app.pwa.later') }}</button></div>
+    </div>
+    <style>
+        .pwa-install { position:fixed; z-index:100; inset-inline-end:24px; bottom:24px; display:flex; align-items:center; gap:12px; max-width:420px; padding:14px; border:1px solid var(--border-strong); border-radius:14px; background:var(--panel); box-shadow:var(--shadow); }
+        .pwa-install[hidden] { display:none; } .pwa-install__icon { width:42px; height:42px; flex:0 0 42px; padding:5px; border-radius:10px; background:#fff; } .pwa-install__icon img { width:100%; height:100%; display:block; } .pwa-install__content { min-width:0; } .pwa-install__content strong { display:block; font-size:14px; } .pwa-install__content p,.pwa-install__content small { display:block; margin:2px 0 0; color:var(--muted); font-size:12px; } .pwa-install__actions { display:flex; gap:6px; flex:0 0 auto; } [dir="rtl"] .pwa-install { text-align:right; }
+        [data-fullscreen-toggle] svg { width:16px; height:16px; }
+        body.app-expanded { overflow: hidden; }
+        body.app-expanded .app-shell { height: 100vh; min-height: 100vh; }
+        body.app-expanded .sidebar, body.app-expanded .main { height: 100vh; }
+        body.app-expanded .main { overflow: auto; }
+        @media (max-width:600px) { .pwa-install { inset-inline:12px; bottom:12px; max-width:none; } .pwa-install__actions { flex-direction:column; } }
+    </style>
+    <script>
+        (function () {
+            var fullscreenButton = document.querySelector('[data-fullscreen-toggle]');
+            var enterIcon = fullscreenButton ? fullscreenButton.querySelector('[data-fullscreen-enter]') : null;
+            var exitIcon = fullscreenButton ? fullscreenButton.querySelector('[data-fullscreen-exit]') : null;
+            function expandedMode() { return document.body.classList.contains('app-expanded'); }
+            function updateFullscreenIcon() { var active = !!document.fullscreenElement || expandedMode(); if (enterIcon) enterIcon.style.display = active ? 'none' : 'block'; if (exitIcon) exitIcon.style.display = active ? 'block' : 'none'; }
+            try { if (localStorage.getItem('ppd-expanded') === '1') document.body.classList.add('app-expanded'); } catch (e) {}
+            if (fullscreenButton) { fullscreenButton.addEventListener('click', function () { var active = !expandedMode(); document.body.classList.toggle('app-expanded', active); try { localStorage.setItem('ppd-expanded', active ? '1' : '0'); } catch (e) {} if (active && document.documentElement.requestFullscreen) { var request = document.documentElement.requestFullscreen(); if (request && request.catch) request.catch(function () {}); } else if (!active && document.fullscreenElement) document.exitFullscreen(); updateFullscreenIcon(); }); document.addEventListener('fullscreenchange', updateFullscreenIcon); updateFullscreenIcon(); }
+
+            if ('serviceWorker' in navigator) window.addEventListener('load', function () { navigator.serviceWorker.register('{{ asset('sw.js') }}').catch(function () {}); });
+
+            var installBox = document.querySelector('[data-pwa-install]'), installButton = document.querySelector('[data-pwa-install-action]'), dismissButton = document.querySelector('[data-pwa-dismiss]'), installHelp = document.querySelector('[data-pwa-help]'), deferredPrompt = null;
+            var standalone = window.matchMedia('(display-mode: standalone)').matches || window.navigator.standalone === true;
+            function showInstallBox() { if (!standalone && installBox) installBox.hidden = false; }
+            window.addEventListener('beforeinstallprompt', function (event) { event.preventDefault(); deferredPrompt = event; showInstallBox(); });
+            window.addEventListener('appinstalled', function () { deferredPrompt = null; if (installBox) installBox.hidden = true; });
+            if (!standalone) window.setTimeout(showInstallBox, 1200);
+            if (dismissButton) dismissButton.addEventListener('click', function () { installBox.hidden = true; });
+            if (installButton) installButton.addEventListener('click', function () { if (!deferredPrompt) { if (installHelp) installHelp.textContent = window.isSecureContext ? '{{ __('app.pwa.browser_help') }}' : '{{ __('app.pwa.secure_help') }}'; return; } deferredPrompt.prompt(); deferredPrompt.userChoice.finally(function () { deferredPrompt = null; }); });
+        })();
+    </script>
 </body>
 </html>

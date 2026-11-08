@@ -100,6 +100,8 @@
         .brand .brand-company { display: block; font-size: 16px; font-weight: 800; letter-spacing: 0; color: var(--text); line-height: 1.25; }
         .brand .brand-sub { font-size: 17px; font-weight: 600; letter-spacing: -.01em; color: var(--muted); line-height: 1.25; }
         .nav { display: flex; flex-direction: column; gap: 4px; flex: 1; overflow-y: auto; min-height: 0; padding-inline-end: 2px; scrollbar-width: thin; }
+        .nav-icon { display: inline-flex; align-items: center; justify-content: center; width: 18px; height: 18px; flex: 0 0 18px; }
+        .nav-icon svg { width: 17px; height: 17px; }
         .nav-label { font-size: 11px; letter-spacing: .14em; text-transform: uppercase; color: var(--text); padding: 0 10px; margin: 10px 0 4px; }
         .nav-link {
             display: flex;
@@ -420,50 +422,50 @@
             <nav class="nav">
                 @if (auth()->user()->hasPermission('dashboard.view'))
                     <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                        <span class="dot"></span> {{ __('app.nav.dashboard') }}
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13h7V3H3v10ZM14 21h7V11h-7v10ZM14 3h7v4h-7V3ZM3 17h7v4H3v-4Z"></path></svg></span> {{ __('app.nav.dashboard') }}
                     </a>
                 @endif
 
                 @if ($canRfq)
                     <a class="nav-link {{ request()->routeIs('rfqs.*') ? 'active' : '' }}" href="{{ route('rfqs.index') }}">
-                        <span class="dot"></span> {{ __('app.nav.rfq') }}
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12a2 2 0 0 1 2 2v14H4V5a2 2 0 0 1 2-2Z"></path><path d="M8 7h8M8 11h8M8 15h5"></path></svg></span> {{ __('app.nav.rfq') }}
                     </a>
                 @endif
 
                 @if ($canVendors)
                     <a class="nav-link {{ request()->routeIs('vendors.*') ? 'active' : '' }}" href="{{ route('vendors.index') }}">
-                        <span class="dot"></span> {{ __('app.nav.vendors') }}
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> {{ __('app.nav.vendors') }}
                     </a>
                 @endif
 
                 @if ($canLocal)
                     <a class="nav-link {{ request()->routeIs('purchasing.local') ? 'active' : '' }}" href="{{ route('purchasing.local') }}">
-                        <span class="dot"></span> {{ __('app.nav.local_purchasing') }}
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10 12 3l9 7v10H3V10Z"></path><path d="M9 20v-6h6v6"></path></svg></span> {{ __('app.nav.local_purchasing') }}
                     </a>
                 @endif
 
                 @if ($canForeign)
                     <a class="nav-link {{ request()->routeIs('purchasing.foreign') ? 'active' : '' }}" href="{{ route('purchasing.foreign') }}">
-                        <span class="dot"></span> {{ __('app.nav.foreign_purchasing') }}
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg></span> {{ __('app.nav.foreign_purchasing') }}
                     </a>
                 @endif
 
                 @if ($canMarket)
                     <a class="nav-link {{ request()->routeIs('purchasing.market') ? 'active' : '' }}" href="{{ route('purchasing.market') }}">
-                        <span class="dot"></span> {{ __('app.nav.local_market') }}
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4z"></path><path d="M8 9h8M8 13h5"></path></svg></span> {{ __('app.nav.local_market') }}
                     </a>
                 @endif
 
                 @if ($canAdministration)
                     <a class="nav-link {{ request()->routeIs('administration.*') || request()->routeIs('markets.*') || request()->routeIs('order_types.*') || request()->routeIs('proposed_methods.*') ? 'active' : '' }}" href="{{ route('administration.index') }}">
-                        <span class="dot"></span> {{ __('app.nav.administration') }}
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span> {{ __('app.nav.administration') }}
                     </a>
                 @endif
 
                 @if ($canUsers || $canRoles || $canAudit)
                     <details class="nav-group" @if ($settingsActive) open @endif>
                         <summary class="nav-link {{ $settingsActive ? 'active' : '' }}">
-                            <span class="dot"></span> {{ __('app.nav.settings') }}
+                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"></path><circle cx="12" cy="12" r="3.5"></circle></svg></span> {{ __('app.nav.settings') }}
                             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M6 9l6 6 6-6"></path>
                             </svg>
@@ -472,19 +474,19 @@
                         <div class="subnav">
                             @if ($canUsers)
                                 <a class="nav-link sub {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
-                                    <span class="dot"></span> {{ __('app.nav.users') }}
+                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"></circle><path d="M3 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1M16 5a3 3 0 0 1 0 6M17 15h1a3 3 0 0 1 3 3v1"></path></svg></span> {{ __('app.nav.users') }}
                                 </a>
                             @endif
 
                             @if ($canRoles)
                                 <a class="nav-link sub {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
-                                    <span class="dot"></span> {{ __('app.nav.roles') }}
+                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 20 7v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4Z"></path><path d="m9 12 2 2 4-4"></path></svg></span> {{ __('app.nav.roles') }}
                                 </a>
                             @endif
 
                             @if ($canAudit)
                                 <a class="nav-link sub {{ request()->routeIs('audit.*') ? 'active' : '' }}" href="{{ route('audit.index') }}">
-                                    <span class="dot"></span> {{ __('app.nav.audit') }}
+                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"></path><path d="M8 8h8M8 12h5M8 16h8"></path></svg></span> {{ __('app.nav.audit') }}
                                 </a>
                             @endif
                         </div>

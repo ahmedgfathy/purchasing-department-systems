@@ -114,17 +114,6 @@
 
         <div class="pref-row">
             <div>
-                <strong>{{ __('app.profile.theme') }}</strong>
-                <p>{{ __('app.profile.theme_hint') }}</p>
-            </div>
-            <div class="segmented" role="group" aria-label="{{ __('app.profile.theme') }}">
-                <button type="button" class="seg" data-set-theme="dark">{{ __('app.profile.dark') }}</button>
-                <button type="button" class="seg" data-set-theme="light">{{ __('app.profile.light') }}</button>
-            </div>
-        </div>
-
-        <div class="pref-row">
-            <div>
                 <strong>{{ __('app.profile.language') }}</strong>
                 <p>{{ __('app.profile.language_hint') }}</p>
             </div>
@@ -172,42 +161,4 @@
         </form>
     </div>
 
-    <script>
-        (function () {
-            var buttons = document.querySelectorAll('[data-set-theme]');
-            var root = document.documentElement;
-
-            function paint(theme) {
-                buttons.forEach(function (button) {
-                    var active = button.dataset.setTheme === theme;
-                    button.classList.toggle('active', active);
-                    button.setAttribute('aria-pressed', active ? 'true' : 'false');
-                });
-            }
-
-            function apply(theme) {
-                if (theme === 'light') {
-                    root.setAttribute('data-theme', 'light');
-                } else {
-                    root.removeAttribute('data-theme');
-                }
-
-                try {
-                    localStorage.setItem('ppd-theme', theme);
-                } catch (e) {
-                    // Ignore storage errors.
-                }
-
-                paint(theme);
-            }
-
-            buttons.forEach(function (button) {
-                button.addEventListener('click', function () {
-                    apply(button.dataset.setTheme);
-                });
-            });
-
-            paint(root.getAttribute('data-theme') === 'light' ? 'light' : 'dark');
-        })();
-    </script>
 @endsection

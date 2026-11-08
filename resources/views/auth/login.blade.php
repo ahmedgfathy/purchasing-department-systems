@@ -3,46 +3,43 @@
 <head>
     <meta charset="utf-8">
     <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#072949">
     <title>{{ __('app.login.title') }} · {{ config('app.name') }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
     <link rel="alternate icon" href="{{ asset('favicon.ico') }}">
-    @include('partials.theme-init')
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;600&family=Noto+Sans+Arabic:wght@400;500;700&family=Roboto:wght@400;500;700;900&display=swap" rel="stylesheet">
     <style>
         :root {
-            --bg: #000000;
-            --panel: #000000;
-            --border: rgba(255, 255, 255, .16);
-            --border-strong: rgba(255, 255, 255, .4);
-            --text: #ffffff;
-            --muted: #ffffff;
-            --primary: #6366f1;
-            --primary-hover: #4f46e5;
-            --danger: #f87171;
-            --input-bg: #000000;
-            --hover: rgba(255, 255, 255, .07);
-            --shadow: 0 30px 80px rgba(0, 0, 0, .5);
-            --font: ui-sans-serif, system-ui, -apple-system, "Segoe UI", Tahoma, "Noto Naskh Arabic", "Noto Sans Arabic", sans-serif;
-        }
+            --pms-navy: #072949;
+            --pms-sea: #0e5f95;
+            --pms-gold: #f2ae2e;
+            --pms-green: #007236;
 
-        [data-theme="light"] {
-            --bg: #ffffff;
+            --bg: #f5f9ff;
             --panel: #ffffff;
-            --border: rgba(37, 99, 235, .2);
-            --border-strong: rgba(37, 99, 235, .55);
-            --text: #000000;
-            --muted: #000000;
-            --primary: #2563eb;
-            --primary-hover: #1d4ed8;
+            --border: #d6e2ef;
+            --border-strong: #b9cee2;
+            --text: #0f2035;
+            --muted: #5a6d82;
+            --primary: #072949;
+            --primary-hover: #0b396a;
             --danger: #b91c1c;
             --input-bg: #ffffff;
-            --hover: rgba(37, 99, 235, .07);
-            --shadow: 0 30px 80px rgba(37, 99, 235, .14);
+            --hover: #edf6ff;
+            --shadow: 0 16px 34px rgba(4, 25, 46, .10);
+            --font: "Roboto", "Segoe UI", Tahoma, Arial, ui-sans-serif, system-ui, "Noto Sans Arabic", sans-serif;
         }
 
         * { box-sizing: border-box; }
         html, body { margin: 0; padding: 0; height: 100%; }
         body {
-            background: var(--bg);
+            background:
+                radial-gradient(at 18% 8%, rgba(242, 174, 46, .25) 0%, transparent 50%),
+                radial-gradient(at 82% 12%, rgba(0, 114, 54, .16) 0%, transparent 45%),
+                radial-gradient(at 50% 92%, rgba(88, 148, 172, .22) 0%, transparent 40%),
+                linear-gradient(#f5f9ff 0%, #f0f6fe 30%, #eaf2fa 70%, #eef5fc 100%);
             color: var(--text);
             font-family: var(--font);
             display: flex;
@@ -57,56 +54,50 @@
             grid-template-columns: 1fr 420px;
             background: var(--panel);
             border: 1px solid var(--border);
-            border-radius: 20px;
+            border-radius: 22px;
             overflow: hidden;
             box-shadow: var(--shadow);
         }
         .intro {
             padding: 48px;
             background:
-                radial-gradient(circle at 80% 20%, rgba(99, 102, 241, .22), transparent 55%),
-                radial-gradient(circle at 10% 90%, rgba(139, 92, 246, .14), transparent 50%);
+                radial-gradient(circle at 80% 20%, rgba(242, 174, 46, .18), transparent 55%),
+                radial-gradient(circle at 10% 90%, rgba(14, 95, 149, .12), transparent 50%),
+                linear-gradient(135deg, #f0f7ff 0%, #e8f0fa 60%, #f5f0e8 100%);
             display: flex;
             flex-direction: column;
             justify-content: space-between;
             gap: 40px;
-        }
-        [data-theme="light"] .intro {
-            background:
-                radial-gradient(circle at 80% 20%, rgba(37, 99, 235, .14), transparent 55%),
-                radial-gradient(circle at 10% 90%, rgba(37, 99, 235, .08), transparent 50%);
         }
         .brand { display: flex; flex-direction: column; align-items: flex-start; gap: 14px; }
         .brand-logo-tile {
             display: inline-flex; align-items: center; justify-content: center;
             padding: 10px 16px; border-radius: 16px;
             background: #ffffff; border: 1px solid var(--border);
-            box-shadow: 0 10px 26px rgba(0, 0, 0, .4);
+            box-shadow: 0 10px 26px rgba(4, 25, 46, .12);
         }
-        [data-theme="light"] .brand-logo-tile { box-shadow: 0 10px 26px rgba(37, 99, 235, .16); }
         .brand-logo-tile img { display: block; height: 52px; width: auto; }
-        .brand .brand-sub { display: block; font-size: 20px; font-weight: 600; letter-spacing: 0; color: var(--text); margin-top: 0; }
-        .intro h1 { font-size: 40px; line-height: 1.15; letter-spacing: -.03em; margin: 0 0 16px; }
+        .brand .brand-sub { display: block; font-size: 20px; font-weight: 600; letter-spacing: 0; color: var(--pms-navy); margin-top: 0; }
+        .intro h1 { font-size: 40px; line-height: 1.15; letter-spacing: -.03em; margin: 0 0 16px; color: var(--pms-navy); }
         .intro p { color: var(--muted); line-height: 1.7; margin: 0; max-width: 38ch; }
         .features { display: flex; flex-direction: column; gap: 12px; margin-top: 26px; }
         .feature { display: flex; gap: 10px; align-items: center; color: var(--text); font-size: 14px; }
         .feature .tick {
             width: 20px; height: 20px; border-radius: 50%;
             display: grid; place-items: center;
-            background: rgba(52, 211, 153, .12);
-            color: #34d399; font-size: 12px; flex: 0 0 auto;
+            background: rgba(0, 114, 54, .12);
+            color: var(--pms-green); font-size: 12px; flex: 0 0 auto;
         }
-        [data-theme="light"] .feature .tick { color: #000000; background: rgba(37, 99, 235, .1); }
         .form-side { padding: 48px 44px; display: flex; flex-direction: column; justify-content: center; }
-        .form-side h2 { margin: 0 0 6px; font-size: 26px; letter-spacing: -.02em; }
+        .form-side h2 { margin: 0 0 6px; font-size: 26px; letter-spacing: -.02em; color: var(--pms-navy); }
         .form-side .sub { margin: 0 0 28px; color: var(--muted); font-size: 14px; }
         .field { margin-bottom: 18px; }
-        label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 7px; }
+        label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 7px; }
         input[type="text"], input[type="email"], input[type="password"] {
             width: 100%;
             padding: 11px 13px;
             border-radius: 10px;
-            border: 1px solid var(--border);
+            border: 1px solid #c9dbeb;
             background: var(--input-bg);
             color: var(--text);
             font-family: inherit;
@@ -116,37 +107,36 @@
         }
         .field .hint { font-size: 12px; color: var(--muted); margin-top: 5px; }
         input:focus {
-            border-color: rgba(99, 102, 241, .7);
-            box-shadow: 0 0 0 3px rgba(99, 102, 241, .16);
+            border-color: rgba(14, 95, 149, .65);
+            box-shadow: 0 0 0 3px rgba(14, 95, 149, .15);
         }
-        input::placeholder { color: var(--text); opacity: 1; }
+        input::placeholder { color: var(--muted); opacity: 1; }
         .row { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 22px; }
-        .remember { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; }
+        .remember { display: flex; align-items: center; gap: 8px; color: var(--muted); font-size: 13px; cursor: pointer; font-weight: 400; }
         .remember input { accent-color: var(--primary); }
         .btn {
             width: 100%;
-            padding: 12px 16px;
+            padding: 13px 16px;
             border: 0;
-            border-radius: 10px;
+            border-radius: 12px;
             background: var(--primary);
             color: #ffffff;
             font-family: inherit;
             font-size: 15px;
-            font-weight: 600;
+            font-weight: 700;
             cursor: pointer;
-            transition: background .15s;
+            transition: background .15s, box-shadow .15s;
         }
-        .btn:hover { background: var(--primary-hover); }
+        .btn:hover { background: var(--primary-hover); box-shadow: 0 10px 20px rgba(7, 41, 73, .25); }
         .error {
             padding: 11px 14px;
-            border-radius: 9px;
-            background: rgba(248, 113, 113, .08);
-            border: 1px solid rgba(248, 113, 113, .28);
+            border-radius: 10px;
+            background: rgba(185, 28, 28, .06);
+            border: 1px solid rgba(185, 28, 28, .25);
             color: var(--danger);
             font-size: 13px;
             margin-bottom: 18px;
         }
-        [data-theme="light"] .error { color: #000000; }
         .error ul { margin: 6px 0 0; padding-left: 16px; }
         .footer-note { margin-top: 26px; text-align: center; color: var(--muted); font-size: 12px; }
         .login-tools {
@@ -160,17 +150,15 @@
         }
         .icon-btn {
             display: inline-flex; align-items: center; justify-content: center; gap: 6px;
-            height: 38px; padding: 0 12px;
-            border: 1px solid var(--border); border-radius: 9px;
-            background: var(--panel); color: var(--text);
+            height: 40px; padding: 0 13px;
+            border: 1px solid rgba(7, 41, 73, .2); border-radius: 12px;
+            background: rgba(255, 255, 255, .85); color: var(--pms-navy);
             font-family: inherit; font-size: 13px; font-weight: 700;
             cursor: pointer; transition: background .15s, border-color .15s;
+            text-decoration: none;
         }
-        .icon-btn:hover { background: var(--hover); border-color: var(--border-strong); }
+        .icon-btn:hover { background: rgba(7, 41, 73, .1); border-color: rgba(7, 41, 73, .33); }
         .icon-btn svg { width: 16px; height: 16px; }
-        .theme-toggle .icon-sun { display: none; }
-        [data-theme="light"] .theme-toggle .icon-sun { display: block; }
-        [data-theme="light"] .theme-toggle .icon-moon { display: none; }
 
         [dir="rtl"] input[type="text"], [dir="rtl"] input[type="email"], [dir="rtl"] input[type="password"] { text-align: right; }
         [dir="rtl"] .error ul { padding-left: 0; padding-right: 16px; }
@@ -199,7 +187,6 @@
             </svg>
             <span>{{ __('app.language.switch_code') }}</span>
         </a>
-        @include('partials.theme-toggle')
     </div>
 
     <div class="shell">

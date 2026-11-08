@@ -9,12 +9,10 @@
 @endsection
 
 @section('content')
-    <div class="card">
-        @include('vendors._form', [
-            'action' => route('vendors.store'),
-            'method' => 'POST',
-            'vendor' => null,
-            'submitLabel' => __('app.vendors.create_submit'),
-        ])
-    </div>
+    @include('vendors._form', [
+        'action' => route('vendors.store'),
+        'method' => 'POST',
+        'vendor' => null,
+        'submitLabel' => __('app.vendors.create_submit'),
+    ])
 @endsection

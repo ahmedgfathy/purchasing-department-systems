@@ -107,69 +107,162 @@
                 <h2>{{ __('app.vendors.directory') }}</h2>
                 <p>{{ __('app.vendors.directory_sub') }}</p>
             </div>
+            <span class="badge slate">{{ $vendors->total() }}</span>
         </div>
 
-        <div class="toolbar">
-            <form method="GET" action="{{ route('vendors.index') }}">
-                <input type="search" name="q" value="{{ $search }}" placeholder="{{ __('app.vendors.search_placeholder') }}" style="min-width:260px">
-                <button type="submit" class="btn btn-secondary">{{ __('app.vendors.search') }}</button>
-                @if ($search !== '')
-                    <a href="{{ route('vendors.index') }}" class="btn btn-ghost">{{ __('app.vendors.clear') }}</a>
-                @endif
-            </form>
+        <form method="GET" action="{{ route('vendors.index') }}">
+            <div class="form-grid">
+                <div class="field full">
+                    <label for="q">{{ __('app.vendors.search_placeholder') }}</label>
+                    <input id="q" type="search" name="q" value="{{ $filters['q'] }}" placeholder="{{ __('app.vendors.search_placeholder') }}">
+                </div>
+
+                <div class="field">
+                    <label for="registration_status">{{ __('app.vendors.filters.registration_status') }}</label>
+                    <select id="registration_status" name="registration_status">
+                        <option value="">{{ __('app.vendors.filters.all') }}</option>
+                        @foreach ($registrationStatuses as $status)
+                            <option value="{{ $status }}" @selected($filters['registration_status'] === $status)>{{ $status }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="country">{{ __('app.vendors.filters.country') }}</label>
+                    <select id="country" name="country">
+                        <option value="">{{ __('app.vendors.filters.all') }}</option>
+                        @foreach ($countries as $country)
+                            <option value="{{ $country }}" @selected($filters['country'] === $country)>{{ $country }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="category">{{ __('app.vendors.filters.category') }}</label>
+                    <select id="category" name="category">
+                        <option value="">{{ __('app.vendors.filters.all') }}</option>
+                        @foreach ($categories as $category)
+                            <option value="{{ $category }}" @selected($filters['category'] === $category)>{{ $category }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label for="type">{{ __('app.vendors.filters.scope') }}</label>
+                    <select id="type" name="type">
+                        <option value="">{{ __('app.vendors.filters.all') }}</option>
+                        @foreach (\App\Models\Vendor::types() as $value => $label)
+                            <option value="{{ $value }}" @selected($filters['type'] === $value)>{{ $label }}</option>
+                        @endforeach
+                    </select>
+                </div>
+
+                <div class="field full">
+                    <label for="activity">{{ __('app.vendors.filters.activity') }}</label>
+                    <input id="activity" type="text" name="activity" value="{{ $filters['activity'] }}" placeholder="{{ __('app.vendors.filters.activity_placeholder') }}">
+                    <div class="hint">{{ __('app.vendors.filters.activity_hint') }}</div>
+                </div>
+
+                <div class="field full">
+                    <div class="actions">
+                        <label class="check">
+                            <input type="checkbox" name="include_stopped" value="1" @checked($filters['include_stopped'])>
+                            <strong>{{ __('app.vendors.filters.include_stopped') }}</strong>
+                        </label>
+                        <label class="check">
+                            <input type="checkbox" name="include_struck" value="1" @checked($filters['include_struck'])>
+                            <strong>{{ __('app.vendors.filters.include_struck') }}</strong>
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="actions">
+                <button type="submit" class="btn btn-primary">{{ __('app.vendors.search') }}</button>
+                <a href="{{ route('vendors.index') }}" class="btn btn-ghost">{{ __('app.vendors.clear') }}</a>
+            </div>
+        </form>
+    </div>
+
+    <div class="card">
+        <div class="card-header">
+            <div>
+                <h2>{{ __('app.vendors.list') }}</h2>
+                <p>{{ __('app.vendors.list_sub') }}</p>
+            </div>
         </div>
 
         @if ($vendors->isEmpty())
             <div class="empty">{{ __('app.vendors.empty') }}</div>
         @else
             <div class="table-wrap">
-                <table>
+                <table style="min-width:1180px">
                     <thead>
                         <tr>
+                            <th>{{ __('app.vendors.fields.supplier_id') }}</th>
                             <th>{{ __('app.vendors.col_vendor') }}</th>
                             <th>{{ __('app.vendors.col_type') }}</th>
-                            <th>{{ __('app.vendors.col_contact') }}</th>
                             <th>{{ __('app.vendors.col_country') }}</th>
+                            <th>{{ __('app.vendors.col_agent') }}</th>
+                            <th>{{ __('app.vendors.col_phone') }}</th>
+                            <th>{{ __('app.vendors.col_email') }}</th>
+                            <th>{{ __('app.vendors.col_contact') }}</th>
                             <th>{{ __('app.vendors.col_category') }}</th>
+                            <th>{{ __('app.vendors.col_registration_status') }}</th>
+                            <th>{{ __('app.vendors.col_services') }}</th>
                             <th>{{ __('app.vendors.col_status') }}</th>
-                            @if (auth()->user()->hasPermission('vendors.manage'))
-                                <th style="width:1%"></th>
-                            @endif
+                            <th style="width:1%"></th>
                         </tr>
                     </thead>
                     <tbody>
                         @foreach ($vendors as $vendor)
                             <tr>
+                                <td class="mono cell-sub">{{ $vendor->supplier_id ?: $vendor->code }}</td>
                                 <td>
-                                    <div class="cell-title">{{ $vendor->name }}</div>
-                                    <div class="cell-sub mono">{{ $vendor->code }}</div>
+                                    <a href="{{ route('vendors.show', $vendor) }}" class="cell-title" style="color:inherit;text-decoration:none">
+                                        {{ $vendor->displayName() }}
+                                    </a>
+                                    @if ($vendor->name_en && $vendor->name_en !== $vendor->name_ar)
+                                        <div class="cell-sub">{{ $vendor->name_en }}</div>
+                                    @endif
                                 </td>
-                                <td class="cell-sub">{{ $vendor->typeLabel() }}</td>
-                                <td>
-                                    <div class="cell-title" style="font-weight:500">{{ $vendor->contact_name ?: '—' }}</div>
-                                    <div class="cell-sub">
-                                        @if ($vendor->email) {{ $vendor->email }} @endif
-                                        @if ($vendor->email && $vendor->phone) · @endif
-                                        @if ($vendor->phone) {{ $vendor->phone }} @endif
-                                    </div>
-                                </td>
+                                <td><span class="badge {{ $vendor->type === \App\Models\Vendor::TYPE_BOTH ? 'amber' : ($vendor->type === \App\Models\Vendor::TYPE_FOREIGN ? 'blue' : 'slate') }}">{{ $vendor->typeLabel() }}</span></td>
                                 <td class="cell-sub">{{ $vendor->country ?: '—' }}</td>
+                                <td class="cell-sub">{{ $vendor->agent_name ?: '—' }}</td>
+                                <td>
+                                    <div class="cell-sub">{{ $vendor->phone ?: '—' }}</div>
+                                    @if ($vendor->mobile1 && $vendor->mobile1 !== $vendor->phone)
+                                        <div class="cell-sub muted">{{ $vendor->mobile1 }}</div>
+                                    @endif
+                                </td>
+                                <td class="cell-sub" style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap">{{ $vendor->email ?: '—' }}</td>
+                                <td class="cell-sub">{{ $vendor->contact_name ?: '—' }}</td>
                                 <td class="cell-sub">{{ $vendor->category ?: '—' }}</td>
+                                <td class="cell-sub">{{ $vendor->registration_status ?: '—' }}</td>
+                                <td><span class="badge static">{{ $vendor->services_count }}</span></td>
                                 <td>
                                     <span class="badge {{ $vendor->status === \App\Models\Vendor::STATUS_ACTIVE ? 'green' : 'slate' }}">{{ $vendor->statusLabel() }}</span>
+                                    @if ($vendor->stopped || $vendor->struck_off)
+                                        <div class="cell-sub">
+                                            @if ($vendor->stopped) {{ __('app.vendors.flags.stopped') }} @endif
+                                            @if ($vendor->stopped && $vendor->struck_off) · @endif
+                                            @if ($vendor->struck_off) {{ __('app.vendors.flags.struck_off') }} @endif
+                                        </div>
+                                    @endif
                                 </td>
-                                @if (auth()->user()->hasPermission('vendors.manage'))
-                                    <td>
-                                        <div style="display:flex;gap:6px;align-items:center">
+                                <td>
+                                    <div class="actions">
+                                        <a href="{{ route('vendors.show', $vendor) }}" class="btn btn-secondary btn-sm">{{ __('app.vendors.view') }}</a>
+                                        @if (auth()->user()->hasPermission('vendors.manage'))
                                             <a href="{{ route('vendors.edit', $vendor) }}" class="btn btn-secondary btn-sm">{{ __('app.vendors.edit') }}</a>
-                                            <form method="POST" action="{{ route('vendors.destroy', $vendor) }}" onsubmit="return confirm('{{ __('app.vendors.delete_confirm') }}')">
+                                            <form method="POST" action="{{ route('vendors.destroy', $vendor) }}" class="inline-form" onsubmit="return confirm('{{ __('app.vendors.delete_confirm') }}')">
                                                 @csrf
                                                 @method('DELETE')
                                                 <button type="submit" class="btn btn-danger btn-sm">{{ __('app.vendors.delete') }}</button>
                                             </form>
-                                        </div>
-                                    </td>
-                                @endif
+                                        @endif
+                                    </div>
+                                </td>
                             </tr>
                         @endforeach
                     </tbody>

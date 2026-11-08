@@ -173,12 +173,22 @@ Route::middleware('auth')->group(function () {
             ->middleware('permission:vendors.manage')->name('create');
         Route::post('/', [VendorController::class, 'store'])
             ->middleware('permission:vendors.manage')->name('store');
+        Route::get('/activities', [VendorController::class, 'activities'])
+            ->middleware('permission:vendors.view')->name('activities');
+        Route::get('/{vendor}', [VendorController::class, 'show'])
+            ->middleware('permission:vendors.view')->name('show');
         Route::get('/{vendor}/edit', [VendorController::class, 'edit'])
             ->middleware('permission:vendors.manage')->name('edit');
         Route::put('/{vendor}', [VendorController::class, 'update'])
             ->middleware('permission:vendors.manage')->name('update');
         Route::delete('/{vendor}', [VendorController::class, 'destroy'])
             ->middleware('permission:vendors.manage')->name('destroy');
+        Route::post('/{vendor}/services', [VendorController::class, 'storeService'])
+            ->middleware('permission:vendors.manage')->name('services.store');
+        Route::put('/{vendor}/services/{service}', [VendorController::class, 'updateService'])
+            ->middleware('permission:vendors.manage')->name('services.update');
+        Route::delete('/{vendor}/services/{service}', [VendorController::class, 'destroyService'])
+            ->middleware('permission:vendors.manage')->name('services.destroy');
     });
 
     Route::prefix('purchasing')->name('purchasing.')->group(function () {

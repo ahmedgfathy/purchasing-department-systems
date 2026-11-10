@@ -8,6 +8,16 @@
     <meta name="mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-capable" content="yes">
     <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="color-scheme" content="light dark">
+    <script>
+        (function () {
+            try {
+                if (localStorage.getItem('ppd-theme') === 'dark') {
+                    document.documentElement.setAttribute('data-theme', 'dark');
+                }
+            } catch (e) {}
+        })();
+    </script>
     <link rel="manifest" href="{{ asset('manifest.webmanifest') }}">
     <title>@yield('title', __('app.dashboard.title')) · {{ config('app.name') }}</title>
     <link rel="icon" type="image/svg+xml" href="{{ asset('favicon.svg') }}">
@@ -46,6 +56,34 @@
             --code-bg: #f7fafd;
             --shadow: 0 16px 34px rgba(4, 25, 46, .08);
             --font: "Roboto", "Segoe UI", Tahoma, Arial, ui-sans-serif, system-ui, "Noto Sans Arabic", sans-serif;
+        }
+
+        /* PMS night theme (dark) */
+        [data-theme="dark"] {
+            --pms-navy: #a9cfe9;
+            --pms-deep: #02101f;
+            --pms-sea: #6fb3dc;
+            --pms-line: #1d3a55;
+
+            --bg: #050f1a;
+            --panel: #0a1c2e;
+            --panel-2: #0e2438;
+            --border: #1d3a55;
+            --border-strong: #2c5175;
+            --text: #e5f1fb;
+            --muted: #8aa7c2;
+            --primary: #0e5f95;
+            --primary-hover: #1470ad;
+            --success: #3ddc97;
+            --danger: #fca5a5;
+            --warning: #fbbf24;
+            --blue: #7fb6de;
+            --surface: rgba(255, 255, 255, .04);
+            --surface-strong: rgba(255, 255, 255, .03);
+            --hover: rgba(255, 255, 255, .05);
+            --input-bg: #0a1c2e;
+            --code-bg: #071726;
+            --shadow: 0 16px 34px rgba(0, 0, 0, .45);
         }
 
         * { box-sizing: border-box; }
@@ -114,6 +152,40 @@
             box-shadow: 0 10px 20px rgba(7, 41, 73, .28);
         }
         .nav-link .dot { width: 7px; height: 7px; border-radius: 50%; background: currentColor; opacity: .55; }
+
+        /* Sidebar auto-collapse */
+        .sidebar-head { display: flex; align-items: flex-start; justify-content: space-between; gap: 8px; }
+        .sidebar .sidebar-toggle {
+            display: inline-flex; align-items: center; justify-content: center;
+            width: 32px; height: 32px; flex: 0 0 32px;
+            border: 1px solid var(--border); border-radius: 10px;
+            background: var(--panel); color: var(--muted); cursor: pointer;
+            transition: background .15s, color .15s, border-color .15s;
+        }
+        .sidebar .sidebar-toggle:hover { background: var(--hover); color: var(--pms-navy); border-color: var(--border-strong); }
+        .sidebar .sidebar-toggle svg { width: 16px; height: 16px; transition: transform .18s ease; }
+        html[dir="rtl"] .sidebar .sidebar-toggle svg { transform: scaleX(-1); }
+        html[dir="rtl"] .sidebar .sidebar-toggle svg { transition: transform .18s ease; }
+        body.sidebar-collapsed .sidebar-toggle svg { transform: scaleX(-1); }
+        html[dir="rtl"] body.sidebar-collapsed .sidebar-toggle svg { transform: none; }
+
+        body.sidebar-collapsed .sidebar { width: 74px; flex: 0 0 74px; padding: 22px 10px; align-items: center; }
+        body.sidebar-collapsed .sidebar-head { justify-content: center; }
+        body.sidebar-collapsed .brand { align-items: center; padding: 0; gap: 0; }
+        body.sidebar-collapsed .brand-logo-tile { padding: 7px; }
+        body.sidebar-collapsed .brand-logo-tile img { height: 42px; min-width: 0; }
+        body.sidebar-collapsed .brand-copy,
+        body.sidebar-collapsed .nav-label,
+        body.sidebar-collapsed .nav-group { display: none; }
+        body.sidebar-collapsed .nav-link { font-size: 0; line-height: 0; gap: 0; padding: 11px 0; justify-content: center; border-radius: 12px; }
+        body.sidebar-collapsed .nav-link .dot { display: none; }
+        body.sidebar-collapsed .nav-link.active { box-shadow: 0 8px 16px rgba(7, 41, 73, .28); }
+        body.sidebar-collapsed .nav-link:hover { background: var(--hover); }
+        body.sidebar-collapsed .sidebar-footer { gap: 8px; }
+        body.sidebar-collapsed .sidebar-footer form { width: 100%; }
+        body.sidebar-collapsed .sidebar-footer .btn { font-size: 0; padding: 9px 0; }
+        .sidebar-footer .btn .signout-icon { display: none; width: 16px; height: 16px; }
+        body.sidebar-collapsed .sidebar-footer .btn .signout-icon { display: inline-block; }
 
         .nav-group { display: block; }
         .nav-group summary { list-style: none; cursor: pointer; user-select: none; }
@@ -244,7 +316,7 @@
         .field { margin-bottom: 16px; }
         .field label { display: block; font-size: 13px; font-weight: 700; color: var(--text); margin-bottom: 6px; }
         .field .hint { font-size: 12px; color: var(--muted); margin-top: 4px; }
-        input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="search"], select, textarea {
+        input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="search"], input[type="number"], select, textarea {
             width: 100%;
             padding: 10px 12px;
             border-radius: 10px;
@@ -357,6 +429,48 @@
         [dir="rtl"] .pagination .summary { margin-left: 0; margin-right: auto; }
         [dir="rtl"] input, [dir="rtl"] textarea, [dir="rtl"] select { text-align: right; }
         [dir="rtl"] .nav-label,
+        /* Theme toggle button */
+        .theme-toggle .icon-sun { display: none; }
+        [data-theme="dark"] .theme-toggle .icon-sun { display: inline; }
+        [data-theme="dark"] .theme-toggle .icon-moon { display: none; }
+
+        /* Dark-theme component overrides */
+        [data-theme="dark"] body {
+            background:
+                radial-gradient(at 18% 8%, rgba(242, 174, 46, .07) 0%, transparent 50%),
+                radial-gradient(at 82% 12%, rgba(0, 114, 54, .09) 0%, transparent 45%),
+                radial-gradient(at 50% 92%, rgba(88, 148, 172, .14) 0%, transparent 40%),
+                linear-gradient(#04131f 0%, #061a2b 30%, #051624 70%, #041120 100%);
+            background-attachment: fixed;
+        }
+        [data-theme="dark"] .sidebar { background: linear-gradient(180deg, rgba(10, 28, 46, .98) 0%, rgba(7, 22, 37, .99) 100%); }
+        [data-theme="dark"] .topbar { background: linear-gradient(135deg, rgba(8, 24, 40, .95), rgba(6, 19, 31, .98)); }
+        [data-theme="dark"] .brand-logo-tile { background: #0e2438; box-shadow: none; }
+        [data-theme="dark"] .icon-btn { color: var(--pms-navy); background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .18); }
+        [data-theme="dark"] .icon-btn:hover { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .3); }
+        [data-theme="dark"] .nav-link:hover { background: rgba(255, 255, 255, .06); }
+        [data-theme="dark"] .nav-link.active { box-shadow: 0 10px 20px rgba(0, 0, 0, .4); }
+        [data-theme="dark"] .sidebar .sidebar-toggle { background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .18); color: var(--pms-navy); }
+        [data-theme="dark"] .sidebar .sidebar-toggle:hover { background: rgba(255, 255, 255, .12); }
+        [data-theme="dark"] th { color: #9cc2de; background: #0e2438; }
+        [data-theme="dark"] td { border-bottom-color: #16304a; }
+        [data-theme="dark"] tbody tr:hover { background: rgba(255, 255, 255, .04); }
+        [data-theme="dark"] .table-wrap { background: transparent; }
+        [data-theme="dark"] input[type="text"], [data-theme="dark"] input[type="email"], [data-theme="dark"] input[type="password"], [data-theme="dark"] input[type="date"], [data-theme="dark"] input[type="search"], [data-theme="dark"] select, [data-theme="dark"] textarea { border-color: #2c5175; }
+        [data-theme="dark"] input[type="file"]::file-selector-button { background: rgba(255, 255, 255, .07); border-color: rgba(255, 255, 255, .18); color: var(--pms-navy); }
+        [data-theme="dark"] .btn-ghost { background: rgba(255, 255, 255, .07); color: var(--pms-navy); border-color: rgba(255, 255, 255, .16); }
+        [data-theme="dark"] .btn-ghost:hover { background: rgba(255, 255, 255, .12); border-color: rgba(255, 255, 255, .3); }
+        [data-theme="dark"] .btn-secondary { background: var(--panel-2); color: var(--pms-navy); }
+        [data-theme="dark"] .badge.green { color: var(--success); background: rgba(61, 220, 151, .1); border-color: rgba(61, 220, 151, .3); }
+        [data-theme="dark"] .badge.red { color: var(--danger); background: rgba(252, 165, 165, .08); border-color: rgba(252, 165, 165, .28); }
+        [data-theme="dark"] .badge.blue { color: var(--blue); background: rgba(127, 182, 222, .1); border-color: rgba(127, 182, 222, .3); }
+        [data-theme="dark"] .badge.static { color: var(--pms-navy); background: rgba(169, 207, 233, .08); border-color: rgba(169, 207, 233, .25); }
+        [data-theme="dark"] .badge.amber { color: var(--warning); background: rgba(251, 191, 36, .1); border-color: rgba(251, 191, 36, .3); }
+        [data-theme="dark"] .alert.success { color: var(--success); background: rgba(61, 220, 151, .07); border-color: rgba(61, 220, 151, .25); }
+        [data-theme="dark"] .alert.error { color: var(--danger); background: rgba(252, 165, 165, .06); border-color: rgba(252, 165, 165, .22); }
+        [data-theme="dark"] .seg.active { color: #ffffff; }
+        [data-theme="dark"] code, [data-theme="dark"] pre { background: var(--code-bg); color: var(--pms-navy); }
+
         [dir="rtl"] .stat span,
         [dir="rtl"] .brand .brand-sub,
         [dir="rtl"] th,
@@ -376,6 +490,14 @@
             .nav-label { display: none; }
             .sidebar-footer { flex-direction: row; justify-content: space-between; align-items: center; }
             .sidebar-footer form { width: auto; }
+            /* Neutralize collapsed rail on stacked/mobile layout */
+            body.sidebar-collapsed .sidebar { width: 100%; flex: none; padding: 18px; align-items: stretch; }
+            body.sidebar-collapsed .sidebar-head { justify-content: space-between; }
+            body.sidebar-collapsed .brand { align-items: flex-start; padding: 4px 10px; gap: 8px; }
+            body.sidebar-collapsed .brand-copy { display: flex; }
+            body.sidebar-collapsed .nav-label { display: block; }
+            body.sidebar-collapsed .nav-group { display: block; }
+            body.sidebar-collapsed .nav-link { font-size: 14px; line-height: 1.5; gap: 10px; padding: 10px 14px; justify-content: flex-start; }
             .topbar, .content { padding-left: 20px; padding-right: 20px; }
             .form-grid { grid-template-columns: 1fr; }
         }
@@ -397,63 +519,68 @@
         @endphp
 
         <aside class="sidebar">
-            <a class="brand" href="{{ route('home') }}" aria-label="{{ config('app.name') }}">
-                <span class="brand-logo-tile">
-                    <img src="{{ asset('images/logo.svg') }}" alt="{{ config('app.name') }} logo">
-                </span>
-                <span class="brand-copy">
-                    <span class="brand-company">خدمات البترول البحرية</span>
-                    <span class="brand-sub">{{ __('app.brand_subtitle') }}</span>
-                </span>
-            </a>
+            <div class="sidebar-head">
+                <a class="brand" href="{{ route('home') }}" aria-label="{{ config('app.name') }}">
+                    <span class="brand-logo-tile">
+                        <img src="{{ asset('images/logo.svg') }}" alt="{{ config('app.name') }} logo">
+                    </span>
+                    <span class="brand-copy">
+                        <span class="brand-company">خدمات البترول البحرية</span>
+                        <span class="brand-sub">{{ __('app.brand_subtitle') }}</span>
+                    </span>
+                </a>
+                <button type="button" class="sidebar-toggle" data-sidebar-toggle title="{{ __('app.nav.toggle_sidebar') }}" aria-label="{{ __('app.nav.toggle_sidebar') }}" aria-expanded="true">
+                    <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="4" width="18" height="16" rx="3.5"></rect><path d="M9.5 4v16"></path><path d="m14 9.5 2.5 2.5-2.5 2.5"></path></svg>
+                </button>
+            </div>
 
             <nav class="nav">
                 @if (auth()->user()->hasPermission('dashboard.view'))
-                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 13h7V3H3v10ZM14 21h7V11h-7v10ZM14 3h7v4h-7V3ZM3 17h7v4H3v-4Z"></path></svg></span> {{ __('app.nav.dashboard') }}
+                    <a class="nav-link {{ request()->routeIs('dashboard') ? 'active' : '' }}" href="{{ route('dashboard') }}" title="{{ __('app.nav.dashboard') }}">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="3" y="3" width="7" height="9" rx="1.5"></rect><rect x="14" y="3" width="7" height="5" rx="1.5"></rect><rect x="14" y="12" width="7" height="9" rx="1.5"></rect><rect x="3" y="16" width="7" height="5" rx="1.5"></rect></svg></span> {{ __('app.nav.dashboard') }}
                     </a>
                 @endif
 
                 @if ($canRfq)
-                    <a class="nav-link {{ request()->routeIs('rfqs.*') ? 'active' : '' }}" href="{{ route('rfqs.index') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M6 3h12a2 2 0 0 1 2 2v14H4V5a2 2 0 0 1 2-2Z"></path><path d="M8 7h8M8 11h8M8 15h5"></path></svg></span> {{ __('app.nav.rfq') }}
+                    <a class="nav-link {{ request()->routeIs('rfqs.*') ? 'active' : '' }}" href="{{ route('rfqs.index') }}" title="{{ __('app.nav.rfq') }}">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7Z"></path><path d="M14 2v4a2 2 0 0 0 2 2h4"></path><path d="M10 9H8"></path><path d="M16 13H8"></path><path d="M16 17H8"></path></svg></span> {{ __('app.nav.rfq') }}
                     </a>
                 @endif
 
                 @if ($canVendors)
-                    <a class="nav-link {{ request()->routeIs('vendors.*') ? 'active' : '' }}" href="{{ route('vendors.index') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 20v-2a4 4 0 0 1 4-4h8a4 4 0 0 1 4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg></span> {{ __('app.nav.vendors') }}
+                    <a class="nav-link {{ request()->routeIs('vendors.*') ? 'active' : '' }}" href="{{ route('vendors.index') }}" title="{{ __('app.nav.vendors') }}">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 22V4a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v18Z"></path><path d="M6 12H4a2 2 0 0 0-2 2v6a2 2 0 0 0 2 2h2"></path><path d="M18 9h2a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2h-2"></path><path d="M10 6h4"></path><path d="M10 10h4"></path><path d="M10 14h4"></path><path d="M10 18h4"></path></svg></span> {{ __('app.nav.vendors') }}
                     </a>
                 @endif
 
                 @if ($canLocal)
-                    <a class="nav-link {{ request()->routeIs('purchasing.local') ? 'active' : '' }}" href="{{ route('purchasing.local') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M3 10 12 3l9 7v10H3V10Z"></path><path d="M9 20v-6h6v6"></path></svg></span> {{ __('app.nav.local_purchasing') }}
+                    <a class="nav-link {{ request()->routeIs('purchasing.local') ? 'active' : '' }}" href="{{ route('purchasing.local') }}" title="{{ __('app.nav.local_purchasing') }}">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m3 9 9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2Z"></path><path d="M9 22V12h6v10"></path></svg></span> {{ __('app.nav.local_purchasing') }}
                     </a>
                 @endif
 
                 @if ($canForeign)
-                    <a class="nav-link {{ request()->routeIs('purchasing.foreign') ? 'active' : '' }}" href="{{ route('purchasing.foreign') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="12" r="9"></circle><path d="M3 12h18M12 3a14 14 0 0 1 0 18M12 3a14 14 0 0 0 0 18"></path></svg></span> {{ __('app.nav.foreign_purchasing') }}
+                    <a class="nav-link {{ request()->routeIs('purchasing.foreign') ? 'active' : '' }}" href="{{ route('purchasing.foreign') }}" title="{{ __('app.nav.foreign_purchasing') }}">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="10"></circle><path d="M12 2a14.5 14.5 0 0 0 0 20 14.5 14.5 0 0 0 0-20"></path><path d="M2 12h20"></path></svg></span> {{ __('app.nav.foreign_purchasing') }}
                     </a>
                 @endif
 
                 @if ($canMarket)
-                    <a class="nav-link {{ request()->routeIs('purchasing.market') ? 'active' : '' }}" href="{{ route('purchasing.market') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 5h16v14H4z"></path><path d="M8 9h8M8 13h5"></path></svg></span> {{ __('app.nav.local_market') }}
+                    <a class="nav-link {{ request()->routeIs('purchasing.market') ? 'active' : '' }}" href="{{ route('purchasing.market') }}" title="{{ __('app.nav.local_market') }}">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="m2 7 4.41-4.41A2 2 0 0 1 7.83 2h8.34a2 2 0 0 1 1.42.59L22 7"></path><path d="M4 12v8a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2v-8"></path><path d="M15 22v-4a2 2 0 0 0-2-2h-2a2 2 0 0 0-2 2v4"></path><path d="M2 7h20"></path><path d="M4 7v-.5A2.5 2.5 0 0 1 6.5 4h11A2.5 2.5 0 0 1 20 7v.5"></path></svg></span> {{ __('app.nav.local_market') }}
                     </a>
                 @endif
 
                 @if ($canAdministration)
-                    <a class="nav-link {{ request()->routeIs('administration.*') || request()->routeIs('markets.*') || request()->routeIs('order_types.*') || request()->routeIs('proposed_methods.*') ? 'active' : '' }}" href="{{ route('administration.index') }}">
-                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"></path><path d="M8 8h8M8 12h8M8 16h5"></path></svg></span> {{ __('app.nav.administration') }}
+                    <a class="nav-link {{ request()->routeIs('administration.*') || request()->routeIs('markets.*') || request()->routeIs('order_types.*') || request()->routeIs('proposed_methods.*') ? 'active' : '' }}" href="{{ route('administration.index') }}" title="{{ __('app.nav.administration') }}">
+                        <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M21 4v7a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2V4"></path><path d="M3 4h18"></path><path d="M6 19h12"></path><path d="M7 11h5"></path><path d="M7 7h10"></path><path d="M9 15h6"></path></svg></span> {{ __('app.nav.administration') }}
                     </a>
                 @endif
 
                 @if ($canUsers || $canRoles || $canAudit)
                     <details class="nav-group" @if ($settingsActive) open @endif>
                         <summary class="nav-link {{ $settingsActive ? 'active' : '' }}">
-                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3v2M12 19v2M3 12h2M19 12h2M5.6 5.6l1.4 1.4M17 17l1.4 1.4M18.4 5.6 17 7M7 17l-1.4 1.4"></path><circle cx="12" cy="12" r="3.5"></circle></svg></span> {{ __('app.nav.settings') }}
+                            <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12.22 2h-.44a2 2 0 0 0-2 2v.18a2 2 0 0 1-1 1.73l-.43.25a2 2 0 0 1-2 0l-.15-.08a2 2 0 0 0-2.73.73l-.22.38a2 2 0 0 0 .73 2.73l.15.1a2 2 0 0 1 1 1.72v.51a2 2 0 0 1-1 1.74l-.15.09a2 2 0 0 0-.73 2.73l.22.38a2 2 0 0 0 2.73.73l.15-.08a2 2 0 0 1 2 0l.43.25a2 2 0 0 1 1 1.73V20a2 2 0 0 0 2 2h.44a2 2 0 0 0 2-2v-.18a2 2 0 0 1 1-1.73l.43-.25a2 2 0 0 1 2 0l.15.08a2 2 0 0 0 2.73-.73l.22-.39a2 2 0 0 0-.73-2.73l-.15-.08a2 2 0 0 1-1-1.74v-.5a2 2 0 0 1 1-1.74l.15-.09a2 2 0 0 0 .73-2.73l-.22-.38a2 2 0 0 0-2.73-.73l-.15.08a2 2 0 0 1-2 0l-.43-.25a2 2 0 0 1-1-1.73V4a2 2 0 0 0-2-2Z"></path><circle cx="12" cy="12" r="3"></circle></svg></span> {{ __('app.nav.settings') }}
                             <svg class="chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
                                 <path d="M6 9l6 6 6-6"></path>
                             </svg>
@@ -462,19 +589,19 @@
                         <div class="subnav">
                             @if ($canUsers)
                                 <a class="nav-link sub {{ request()->routeIs('users.*') ? 'active' : '' }}" href="{{ route('users.index') }}">
-                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="9" cy="8" r="3"></circle><path d="M3 20v-1a4 4 0 0 1 4-4h4a4 4 0 0 1 4 4v1M16 5a3 3 0 0 1 0 6M17 15h1a3 3 0 0 1 3 3v1"></path></svg></span> {{ __('app.nav.users') }}
+                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M16 21v-2a4 4 0 0 0-4-4H6a4 4 0 0 0-4 4v2"></path><circle cx="9" cy="7" r="4"></circle><path d="M22 21v-2a4 4 0 0 0-3-3.87"></path><path d="M16 3.13a4 4 0 0 1 0 7.75"></path></svg></span> {{ __('app.nav.users') }}
                                 </a>
                             @endif
 
                             @if ($canRoles)
                                 <a class="nav-link sub {{ request()->routeIs('roles.*') ? 'active' : '' }}" href="{{ route('roles.index') }}">
-                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3 20 7v5c0 5-3.4 8-8 9-4.6-1-8-4-8-9V7l8-4Z"></path><path d="m9 12 2 2 4-4"></path></svg></span> {{ __('app.nav.roles') }}
+                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1Z"></path><path d="m9 12 2 2 4-4"></path></svg></span> {{ __('app.nav.roles') }}
                                 </a>
                             @endif
 
                             @if ($canAudit)
                                 <a class="nav-link sub {{ request()->routeIs('audit.*') ? 'active' : '' }}" href="{{ route('audit.index') }}">
-                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M4 4h16v16H4z"></path><path d="M8 8h8M8 12h5M8 16h8"></path></svg></span> {{ __('app.nav.audit') }}
+                                    <span class="nav-icon"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect width="8" height="4" x="8" y="2" rx="1"></rect><path d="M16 4h2a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h2"></path><path d="M12 11h4"></path><path d="M12 16h4"></path><path d="M8 11h.01"></path><path d="M8 16h.01"></path></svg></span> {{ __('app.nav.audit') }}
                                 </a>
                             @endif
                         </div>
@@ -485,7 +612,7 @@
             <div class="sidebar-footer">
                 <form method="POST" action="{{ route('logout') }}">
                     @csrf
-                    <button type="submit" class="btn btn-ghost btn-block btn-sm">{{ __('app.nav.sign_out') }}</button>
+                    <button type="submit" class="btn btn-ghost btn-block btn-sm"><svg class="signout-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><path d="m16 17 5-5-5-5"></path><path d="M21 12H9"></path></svg> {{ __('app.nav.sign_out') }}</button>
                 </form>
             </div>
         </aside>
@@ -504,17 +631,20 @@
                             title="{{ __('app.language.switch_title') }}"
                             aria-label="{{ __('app.language.switch_title') }}"
                         >
-                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true">
-                                <circle cx="12" cy="12" r="9"></circle>
-                                <path d="M3 12h18"></path>
-                                <path d="M12 3a15 15 0 0 1 0 18"></path>
-                                <path d="M12 3a15 15 0 0 0 0 18"></path>
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <path d="M2 12h20"></path>
+                                <path d="M12 2a15.3 15.3 0 0 1 4 10 15.3 15.3 0 0 1-4 10 15.3 15.3 0 0 1-4-10 15.3 15.3 0 0 1 4-10Z"></path>
                             </svg>
                             <span>{{ __('app.language.switch_code') }}</span>
                         </a>
+                        <button type="button" class="icon-btn theme-toggle" data-theme-toggle title="{{ __('app.theme.toggle') }}" aria-label="{{ __('app.theme.toggle') }}">
+                            <svg class="icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 3a6 6 0 0 0 9 9 9 9 0 1 1-9-9Z"></path></svg>
+                            <svg class="icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4"></circle><path d="M12 2v2"></path><path d="M12 20v2"></path><path d="m4.93 4.93 1.41 1.41"></path><path d="m17.66 17.66 1.41 1.41"></path><path d="M2 12h2"></path><path d="M20 12h2"></path><path d="m6.34 17.66-1.41 1.41"></path><path d="m19.07 4.93-1.41 1.41"></path></svg>
+                        </button>
                         <button type="button" class="icon-btn" data-fullscreen-toggle title="{{ __('app.fullscreen.toggle') }}" aria-label="{{ __('app.fullscreen.toggle') }}">
-                            <svg data-fullscreen-enter viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M8 21H3v-5M21 16v5h-5"></path></svg>
-                            <svg data-fullscreen-exit viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true" style="display:none"><path d="M9 3v6H3M15 3v6h6M9 21v-6H3M21 15h-6v6"></path></svg>
+                            <svg data-fullscreen-enter viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M8 3H5a2 2 0 0 0-2 2v3M16 3h3a2 2 0 0 1 2 2v3M8 21H5a2 2 0 0 1-2-2v-3M16 21h3a2 2 0 0 0 2-2v-3"></path></svg>
+                            <svg data-fullscreen-exit viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" style="display:none"><path d="M8 3v3a2 2 0 0 1-2 2H3M21 8h-3a2 2 0 0 1-2-2V3M3 16h3a2 2 0 0 1 2 2v3M16 21v-3a2 2 0 0 1 2-2h3"></path></svg>
                         </button>
                     </div>
                     @yield('actions')
@@ -580,6 +710,32 @@
             if (!standalone) window.setTimeout(showInstallBox, 1200);
             if (dismissButton) dismissButton.addEventListener('click', function () { installBox.hidden = true; });
             if (installButton) installButton.addEventListener('click', function () { if (!deferredPrompt) { if (installHelp) installHelp.textContent = window.isSecureContext ? '{{ __('app.pwa.browser_help') }}' : '{{ __('app.pwa.secure_help') }}'; return; } deferredPrompt.prompt(); deferredPrompt.userChoice.finally(function () { deferredPrompt = null; }); });
+        })();
+
+        // Sidebar auto-collapse: collapses on narrow screens, remembers manual toggles.
+        (function () {
+            var KEY = 'ppd-sidebar-collapsed';
+            var mq = window.matchMedia('(max-width: 1250px)');
+            var pref = null;
+            try { pref = localStorage.getItem(KEY); } catch (e) {}
+            function apply(collapse) {
+                document.body.classList.toggle('sidebar-collapsed', collapse);
+                var button = document.querySelector('[data-sidebar-toggle]');
+                if (button) button.setAttribute('aria-expanded', collapse ? 'false' : 'true');
+            }
+            apply(pref === null ? mq.matches : pref === '1');
+            var toggle = document.querySelector('[data-sidebar-toggle]');
+            if (toggle && !toggle.dataset.sidebarBound) {
+                toggle.dataset.sidebarBound = '1';
+                toggle.addEventListener('click', function () {
+                    var collapsed = !document.body.classList.contains('sidebar-collapsed');
+                    apply(collapsed);
+                    pref = collapsed ? '1' : '0';
+                    try { localStorage.setItem(KEY, pref); } catch (e) {}
+                });
+            }
+            function onBreakpoint(event) { if (pref === null) apply(event.matches); }
+            if (mq.addEventListener) mq.addEventListener('change', onBreakpoint); else mq.addListener(onBreakpoint);
         })();
     </script>
 </body>

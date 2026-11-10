@@ -1,4 +1,8 @@
-<div class="detail">
+@php
+    $isEmpty = ($value ?? '') === '' || $value === null;
+@endphp
+
+<div class="vfact">
     <dt>{{ $label }}</dt>
-    <dd>{{ ($value ?? '') !== '' && $value !== null ? $value : '—' }}</dd>
+    <dd @class(['is-empty' => $isEmpty])>{{ $isEmpty ? '—' : $value }}</dd>
 </div>

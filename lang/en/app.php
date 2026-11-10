@@ -30,6 +30,7 @@ return [
         'administration' => 'Administration',
         'settings' => 'Settings',
         'sign_out' => 'Sign out',
+        'toggle_sidebar' => 'Collapse / expand sidebar',
         'no_role' => 'No role',
     ],
 
@@ -471,6 +472,7 @@ return [
         'col_email' => 'Email',
         'col_registration_status' => 'Registration',
         'col_services' => 'Services',
+        'filters_toggle' => 'Filters',
         'filters' => [
             'all' => 'All',
             'registration_status' => 'Registration status',

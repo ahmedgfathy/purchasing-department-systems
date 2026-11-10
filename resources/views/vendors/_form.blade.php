@@ -2,93 +2,92 @@
     $vendor = $vendor ?? null;
     $isEdit = $vendor !== null;
 
+    $rawValue = function (string $name) use ($vendor) {
+        $value = old($name, $vendor?->getAttribute($name));
+
+        return $value instanceof \DateTimeInterface ? $value->format('Y-m-d') : ($value ?? '');
+    };
+
+    $checked = fn (string $name) => (bool) old($name, $vendor?->getAttribute($name) ?? false);
+    $label = fn (string $name) => __('app.vendors.fields.'.$name);
+
+    $widthClass = [
+        3 => ' vendor-grid__field',
+        4 => ' vendor-grid__field vendor-grid__field--wide',
+        6 => ' vendor-grid__field vendor-grid__field--half',
+        8 => ' vendor-grid__field vendor-grid__field--xwide',
+        12 => ' vendor-grid__field vendor-grid__field--full',
+    ];
+
     $sections = [
         [
             'key' => 'master',
-            'fields' => [
-                ['name' => 'name_ar', 'type' => 'text', 'required' => true, 'span' => 6],
-                ['name' => 'name_en', 'type' => 'text', 'span' => 6],
-                ['name' => 'supplier_id', 'type' => 'number'],
-                ['name' => 'code', 'type' => 'text', 'placeholder' => __('app.vendors.code_placeholder'), 'hint' => __('app.vendors.code_hint')],
-                ['name' => 'brochure_no', 'type' => 'number'],
-                ['name' => 'brochure_type', 'type' => 'select', 'options' => ['محلى' => 'محلى', 'خارجى' => 'خارجى']],
-                ['name' => 'country', 'type' => 'text'],
-                ['name' => 'category', 'type' => 'text'],
-                ['name' => 'registration_status', 'type' => 'text', 'datalist' => 'registration-status-options'],
-                ['name' => 'registration_status_legacy', 'type' => 'text'],
-                ['name' => 'certified_class', 'type' => 'text'],
-                ['name' => 'sab_no', 'type' => 'text'],
-                ['name' => 'data_entry_user', 'type' => 'text'],
-                ['name' => 'free_zone', 'type' => 'text'],
-                ['name' => 'cd_vendor', 'type' => 'text'],
-                ['name' => 'local_registered', 'type' => 'check'],
-                ['name' => 'foreign_registered', 'type' => 'check'],
-                ['name' => 'stopped', 'type' => 'check'],
-                ['name' => 'struck_off', 'type' => 'check'],
+            'rows' => [
+                ['type' => 'text', 'name' => 'name_ar', 'w' => 6, 'required' => true],
+                ['type' => 'text', 'name' => 'name_en', 'w' => 6],
+                ['type' => 'number', 'name' => 'supplier_id', 'w' => 3],
+                ['type' => 'text', 'name' => 'code', 'w' => 3, 'placeholder' => __('app.vendors.code_placeholder'), 'hint' => __('app.vendors.code_hint')],
+                ['type' => 'number', 'name' => 'brochure_no', 'w' => 3],
+                ['type' => 'select', 'name' => 'brochure_type', 'w' => 3, 'options' => ['محلى' => 'محلى', 'خارجى' => 'خارجى']],
+                ['type' => 'text', 'name' => 'country', 'w' => 3],
+                ['type' => 'text', 'name' => 'category', 'w' => 3],
+                ['type' => 'text', 'name' => 'registration_status', 'w' => 3, 'datalist' => 'registration-status-options'],
+                ['type' => 'text', 'name' => 'registration_status_legacy', 'w' => 3],
+                ['type' => 'text', 'name' => 'certified_class', 'w' => 3],
+                ['type' => 'text', 'name' => 'sab_no', 'w' => 3],
+                ['type' => 'text', 'name' => 'data_entry_user', 'w' => 3],
+                ['type' => 'text', 'name' => 'free_zone', 'w' => 3],
+                ['type' => 'text', 'name' => 'cd_vendor', 'w' => 3],
+                ['type' => 'flags', 'fields' => ['local_registered', 'foreign_registered', 'stopped', 'struck_off']],
             ],
         ],
         [
             'key' => 'contact',
-            'fields' => [
-                ['name' => 'phone1', 'type' => 'text'],
-                ['name' => 'phone2', 'type' => 'text'],
-                ['name' => 'phone3', 'type' => 'text'],
-                ['name' => 'mobile1', 'type' => 'text'],
-                ['name' => 'mobile2', 'type' => 'text'],
-                ['name' => 'mobile3', 'type' => 'text'],
-                ['name' => 'fax1', 'type' => 'text'],
-                ['name' => 'fax2', 'type' => 'text'],
-                ['name' => 'contact_name', 'type' => 'text'],
-                ['name' => 'email1', 'type' => 'text', 'span' => 6],
-                ['name' => 'email2', 'type' => 'text', 'span' => 6],
-                ['name' => 'email3', 'type' => 'text', 'span' => 6],
-                ['name' => 'website', 'type' => 'text', 'span' => 6],
-                ['name' => 'address', 'type' => 'text', 'span' => 12],
+            'rows' => [
+                ['type' => 'group', 'fields' => ['phone1', 'phone2', 'phone3'], 'w' => 4, 'numeric' => true],
+                ['type' => 'group', 'fields' => ['mobile1', 'mobile2', 'mobile3'], 'w' => 4, 'numeric' => true],
+                ['type' => 'group', 'fields' => ['fax1', 'fax2'], 'w' => 4, 'numeric' => true],
+                ['type' => 'text', 'name' => 'contact_name', 'w' => 4],
+                ['type' => 'text', 'name' => 'website', 'w' => 8, 'ltr' => true],
+                ['type' => 'group', 'fields' => ['email1', 'email2', 'email3'], 'w' => 12, 'ltr' => true],
+                ['type' => 'text', 'name' => 'address', 'w' => 12],
             ],
         ],
         [
             'key' => 'agent',
-            'fields' => [
-                ['name' => 'agent_name', 'type' => 'text'],
-                ['name' => 'agent_phone1', 'type' => 'text'],
-                ['name' => 'agent_phone2', 'type' => 'text'],
-                ['name' => 'agent_phone3', 'type' => 'text'],
-                ['name' => 'agent_mobile1', 'type' => 'text'],
-                ['name' => 'agent_mobile2', 'type' => 'text'],
-                ['name' => 'agent_mobile3', 'type' => 'text'],
-                ['name' => 'agent_fax1', 'type' => 'text'],
-                ['name' => 'agent_fax2', 'type' => 'text'],
-                ['name' => 'agent_fax3', 'type' => 'text'],
-                ['name' => 'agent_email1', 'type' => 'text'],
-                ['name' => 'agent_email2', 'type' => 'text'],
-                ['name' => 'agent_email3', 'type' => 'text'],
-                ['name' => 'agent_address', 'type' => 'text', 'span' => 12],
+            'rows' => [
+                ['type' => 'text', 'name' => 'agent_name', 'w' => 4],
+                ['type' => 'group', 'fields' => ['agent_phone1', 'agent_phone2', 'agent_phone3'], 'w' => 4, 'numeric' => true],
+                ['type' => 'group', 'fields' => ['agent_mobile1', 'agent_mobile2', 'agent_mobile3'], 'w' => 4, 'numeric' => true],
+                ['type' => 'group', 'fields' => ['agent_fax1', 'agent_fax2', 'agent_fax3'], 'w' => 4, 'numeric' => true],
+                ['type' => 'group', 'fields' => ['agent_email1', 'agent_email2', 'agent_email3'], 'w' => 8, 'ltr' => true, 'start' => 9],
+                ['type' => 'text', 'name' => 'agent_address', 'w' => 12],
             ],
         ],
         [
             'key' => 'registration',
-            'fields' => [
-                ['name' => 'committee_date', 'type' => 'date'],
-                ['name' => 'committee_no', 'type' => 'text'],
-                ['name' => 'owner_name', 'type' => 'text'],
-                ['name' => 'commercial_register', 'type' => 'text'],
-                ['name' => 'commercial_register_expiry', 'type' => 'date'],
-                ['name' => 'tax_card', 'type' => 'text'],
-                ['name' => 'tax_card_expiry', 'type' => 'date'],
-                ['name' => 'vat_number', 'type' => 'text'],
-                ['name' => 'vat_expiry', 'type' => 'date'],
-                ['name' => 'capital_amount', 'type' => 'number'],
-                ['name' => 'capital_currency', 'type' => 'text'],
+            'rows' => [
+                ['type' => 'date', 'name' => 'committee_date', 'w' => 3],
+                ['type' => 'text', 'name' => 'committee_no', 'w' => 3],
+                ['type' => 'text', 'name' => 'owner_name', 'w' => 3],
+                ['type' => 'number', 'name' => 'capital_amount', 'w' => 3],
+                ['type' => 'text', 'name' => 'commercial_register', 'w' => 3],
+                ['type' => 'date', 'name' => 'commercial_register_expiry', 'w' => 3],
+                ['type' => 'text', 'name' => 'tax_card', 'w' => 3],
+                ['type' => 'date', 'name' => 'tax_card_expiry', 'w' => 3],
+                ['type' => 'text', 'name' => 'vat_number', 'w' => 3],
+                ['type' => 'date', 'name' => 'vat_expiry', 'w' => 3],
+                ['type' => 'text', 'name' => 'capital_currency', 'w' => 3],
             ],
         ],
         [
             'key' => 'documents',
-            'fields' => [
-                ['name' => 'agency_documents', 'type' => 'textarea', 'span' => 12],
-                ['name' => 'special_notes', 'type' => 'textarea', 'span' => 12],
-                ['name' => 'notes', 'type' => 'textarea', 'span' => 12],
-                ['name' => 'extra_notes', 'type' => 'textarea', 'span' => 12],
-                ['name' => 'committee_text', 'type' => 'textarea', 'span' => 12],
+            'rows' => [
+                ['type' => 'textarea', 'name' => 'agency_documents', 'w' => 6],
+                ['type' => 'textarea', 'name' => 'special_notes', 'w' => 6],
+                ['type' => 'textarea', 'name' => 'notes', 'w' => 6],
+                ['type' => 'textarea', 'name' => 'extra_notes', 'w' => 6],
+                ['type' => 'textarea', 'name' => 'committee_text', 'w' => 12],
             ],
         ],
     ];
@@ -123,67 +122,108 @@
     </div>
 
     @foreach ($sections as $index => $section)
-        <section class="vendor-section">
-            <div class="vendor-section__header">
+        <details class="vendor-section" open>
+            <summary class="vendor-section__header">
                 <span class="vendor-section__number">{{ str_pad((string) ($index + 1), 2, '0', STR_PAD_LEFT) }}</span>
-                <div>
+                <div class="vendor-section__titles">
                     <h3>{{ __('app.vendors.sections.'.$section['key']) }}</h3>
                     <p>{{ __('app.vendors.sections.'.$section['key'].'_sub') }}</p>
                 </div>
-            </div>
+                <svg class="vendor-section__chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M6 9l6 6 6-6"/></svg>
+            </summary>
 
             <div class="vendor-grid">
-                @foreach ($section['fields'] as $field)
+                @foreach ($section['rows'] as $row)
                     @php
-                        $name = $field['name'];
-                        $type = $field['type'] ?? 'text';
-                        $label = __('app.vendors.fields.'.$name);
-                        $span = $field['span'] ?? 4;
-                        $spanClass = $span === 12 ? ' vendor-grid__field--full' : ($span === 6 ? ' vendor-grid__field--wide' : '');
-                        $checked = old($name, (bool) ($vendor?->getAttribute($name) ?? false));
+                        $type = $row['type'] ?? 'text';
+                        $width = $widthClass[$row['w'] ?? 3] ?? $widthClass[3];
                     @endphp
 
-                    <div class="vendor-grid__field{{ $spanClass }}">
-                        <div class="field">
-                            @if ($type === 'check')
-                                <label class="check">
-                                    <input type="checkbox" name="{{ $name }}" value="1" @checked($checked)>
-                                    <strong>{{ $label }}</strong>
-                                </label>
-                            @else
-                                <label for="{{ $name }}">
-                                    {{ $label }}
-                                    @if ($field['required'] ?? false)<abbr title="required">*</abbr>@endif
+                    @if ($type === 'flags')
+                        <div class="vendor-grid__field vendor-grid__field--full">
+                            <div class="vflags">
+                                @foreach ($row['fields'] as $flag)
+                                    <label class="vflag">
+                                        <input type="checkbox" name="{{ $flag }}" value="1" @checked($checked($flag))>
+                                        <span>{{ $label($flag) }}</span>
+                                    </label>
+                                @endforeach
+                            </div>
+                        </div>
+                    @elseif ($type === 'group')
+                        @php
+                            $first = $row['fields'][0];
+                            $groupLabel = preg_replace('/\s*\d+\s*$/u', '', $label($first));
+                            $count = count($row['fields']);
+                        @endphp
+                        <div class="{{ trim($width) }}">
+                            <div class="field">
+                                <label>{{ $groupLabel }}</label>
+                                <div class="vgroup__row{{ $count === 2 ? ' vgroup__row--two' : '' }}">
+                                    @foreach ($row['fields'] as $field)
+                                        <input
+                                            id="{{ $field }}"
+                                            type="text"
+                                            name="{{ $field }}"
+                                            value="{{ $rawValue($field) }}"
+                                            placeholder="{{ $loop->iteration }}"
+                                            @if ($row['ltr'] ?? false) dir="ltr" @endif
+                                            aria-label="{{ $label($field) }}"
+                                        >
+                                    @endforeach
+                                </div>
+                                @foreach ($row['fields'] as $field)
+                                    @error($field)
+                                        <div class="error-text">{{ $message }}</div>
+                                    @enderror
+                                @endforeach
+                            </div>
+                        </div>
+                    @else
+                        <div class="{{ trim($width) }}">
+                            <div class="field">
+                                <label for="{{ $row['name'] }}">
+                                    {{ $label($row['name']) }}
+                                    @if ($row['required'] ?? false)<abbr title="required">*</abbr>@endif
                                 </label>
 
                                 @if ($type === 'textarea')
-                                    <textarea id="{{ $name }}" name="{{ $name }}" rows="3" placeholder="{{ $field['placeholder'] ?? '' }}">{{ old($name, $vendor?->getAttribute($name) ?? '') }}</textarea>
+                                    <textarea id="{{ $row['name'] }}" name="{{ $row['name'] }}" rows="2" placeholder="{{ $row['placeholder'] ?? '' }}">{{ $rawValue($row['name']) }}</textarea>
                                 @elseif ($type === 'select')
-                                    <select id="{{ $name }}" name="{{ $name }}">
+                                    <select id="{{ $row['name'] }}" name="{{ $row['name'] }}">
                                         <option value="">{{ __('app.vendors.filters.all') }}</option>
-                                        @foreach ($field['options'] as $value => $optionLabel)
-                                            <option value="{{ $value }}" @selected((string) old($name, $vendor?->getAttribute($name) ?? '') === (string) $value)>{{ $optionLabel }}</option>
+                                        @foreach ($row['options'] as $value => $optionLabel)
+                                            <option value="{{ $value }}" @selected((string) $rawValue($row['name']) === (string) $value)>{{ $optionLabel }}</option>
                                         @endforeach
                                     </select>
                                 @elseif ($type === 'date')
-                                    <input id="{{ $name }}" type="date" name="{{ $name }}" value="{{ old($name, ($vendor?->getAttribute($name))?->format('Y-m-d') ?? '') }}">
+                                    <input id="{{ $row['name'] }}" type="date" name="{{ $row['name'] }}" value="{{ $rawValue($row['name']) }}">
                                 @else
-                                    <input id="{{ $name }}" type="{{ $type }}" name="{{ $name }}" value="{{ old($name, $vendor?->getAttribute($name) ?? '') }}" placeholder="{{ $field['placeholder'] ?? '' }}" @if ($field['required'] ?? false) required @endif @if (! empty($field['datalist'])) list="{{ $field['datalist'] }}" @endif>
+                                    <input
+                                        id="{{ $row['name'] }}"
+                                        type="{{ $type }}"
+                                        name="{{ $row['name'] }}"
+                                        value="{{ $rawValue($row['name']) }}"
+                                        placeholder="{{ $row['placeholder'] ?? '' }}"
+                                        @if ($row['required'] ?? false) required @endif
+                                        @if (! empty($row['datalist'])) list="{{ $row['datalist'] }}" @endif
+                                        @if ($row['ltr'] ?? false) dir="ltr" @endif
+                                    >
                                 @endif
 
-                                @if (! empty($field['hint']))
-                                    <span class="hint">{{ $field['hint'] }}</span>
+                                @if (! empty($row['hint']))
+                                    <span class="hint">{{ $row['hint'] }}</span>
                                 @endif
-                            @endif
 
-                            @error($name)
-                                <div class="error-text">{{ $message }}</div>
-                            @enderror
+                                @error($row['name'])
+                                    <div class="error-text">{{ $message }}</div>
+                                @enderror
+                            </div>
                         </div>
-                    </div>
+                    @endif
                 @endforeach
             </div>
-        </section>
+        </details>
     @endforeach
 
     <div class="vendor-form__footer">

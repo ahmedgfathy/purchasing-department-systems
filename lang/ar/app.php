@@ -29,6 +29,7 @@ return [
         'administration' => 'الإدارة',
         'settings' => 'الإعدادات',
         'sign_out' => 'تسجيل الخروج',
+        'toggle_sidebar' => 'طي / توسيع الشريط الجانبي',
         'no_role' => 'بدون دور',
     ],
 
@@ -196,6 +197,7 @@ return [
         'list' => 'كل الموردين', 'list_sub' => 'كل الموردين المطابقين للفلاتر الحالية.',
         'view' => 'عرض', 'col_agent' => 'الوكيل', 'col_phone' => 'التليفون / المحمول',
         'col_email' => 'البريد', 'col_registration_status' => 'التسجيل', 'col_services' => 'الأنشطة',
+        'filters_toggle' => 'الفلاتر',
         'filters' => [
             'all' => 'الكل', 'registration_status' => 'موقف التسجيل', 'country' => 'الدولة',
             'category' => 'الفئة', 'scope' => 'محلي / أجنبي', 'activity' => 'الخدمة / المنتج',
